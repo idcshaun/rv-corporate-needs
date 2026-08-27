@@ -12,62 +12,72 @@ import {
 } from "lucide-react";
 
 /* =========================================================
+   GITHUB PAGES BASE PATH
+========================================================= */
+
+const BASE_PATH = "/rv-corporate-needs";
+
+/* =========================================================
    DATA
 ========================================================= */
 
 const corporateProducts = [
   {
     name: "IT Products",
-    href: "/solutions/corporate/it-products",
+    href: `${BASE_PATH}/solutions/corporate/it-products`,
   },
   {
     name: "Pantry",
-    href: "/solutions/corporate/pantry",
+    href: `${BASE_PATH}/solutions/corporate/pantry`,
   },
   {
     name: "Stationery",
-    href: "/solutions/corporate/stationery",
+    href: `${BASE_PATH}/solutions/corporate/stationery`,
   },
   {
     name: "Hygiene",
-    href: "/solutions/corporate/hygiene",
+    href: `${BASE_PATH}/solutions/corporate/hygiene`,
   },
   {
     name: "Housekeeping",
-    href: "/solutions/corporate/housekeeping",
+    href: `${BASE_PATH}/solutions/corporate/housekeeping`,
   },
   {
     name: "Corporate Gifting",
-    href: "/solutions/corporate/corporate-gifting",
+    href: `${BASE_PATH}/solutions/corporate/corporate-gifting`,
   },
 ];
 
 const industrialProducts = [
   {
     name: "Bearings",
-    href: "/solutions/industrial/bearings",
+    href: `${BASE_PATH}/solutions/industrial/bearings`,
   },
   {
     name: "Cleanroom",
-    href: "/solutions/industrial/cleanroom-solutions",
+    href: `${BASE_PATH}/solutions/industrial/cleanroom-solutions`,
   },
   {
     name: "ESD",
-    href: "/solutions/industrial/esd-solutions",
+    href: `${BASE_PATH}/solutions/industrial/esd-solutions`,
   },
   {
     name: "Fabrication",
-    href: "/solutions/industrial/fabrication-unit",
+    href: `${BASE_PATH}/solutions/industrial/fabrication-unit`,
   },
   {
     name: "Garments",
-    href: "/solutions/industrial/garments-accessories",
+    href: `${BASE_PATH}/solutions/industrial/garments-accessories`,
   },
   {
     name: "Lubricants",
-    href: "/solutions/industrial/lubricants",
+    href: `${BASE_PATH}/solutions/industrial/lubricants`,
   },
 ];
+
+/* =========================================================
+   QUOTE LINK
+========================================================= */
 
 const EMAIL = "sales@rvcorporateneeds.com";
 
@@ -160,19 +170,46 @@ export default function Navbar() {
   function scrollToSection(sectionId: string) {
     closeMenus();
 
-    if (window.location.pathname !== "/") {
-      window.location.href = `/#${sectionId}`;
+    const currentPath = window.location.pathname;
+
+    /*
+      If we are on another page, return to the homepage
+      using the GitHub Pages base path.
+    */
+
+    if (
+      currentPath !== BASE_PATH &&
+      currentPath !== `${BASE_PATH}/`
+    ) {
+      window.location.href = `${BASE_PATH}/#${sectionId}`;
       return;
     }
 
+    /*
+      We are already on the homepage.
+      Scroll directly to the section.
+    */
+
     const element = document.getElementById(sectionId);
 
-    if (!element) return;
+    if (!element) {
+      return;
+    }
 
     element.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
+
+    /*
+      Update URL hash without causing another page load.
+    */
+
+    window.history.replaceState(
+      null,
+      "",
+      `${BASE_PATH}/#${sectionId}`
+    );
   }
 
   /* =======================================================
@@ -182,15 +219,35 @@ export default function Navbar() {
   function handleHome() {
     closeMenus();
 
-    if (window.location.pathname !== "/") {
-      window.location.href = "/";
+    const currentPath = window.location.pathname;
+
+    /*
+      If we're on another page, go back to the actual
+      GitHub Pages homepage.
+    */
+
+    if (
+      currentPath !== BASE_PATH &&
+      currentPath !== `${BASE_PATH}/`
+    ) {
+      window.location.href = `${BASE_PATH}/`;
       return;
     }
+
+    /*
+      Already on homepage.
+    */
 
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
+
+    window.history.replaceState(
+      null,
+      "",
+      `${BASE_PATH}/`
+    );
   }
 
   /* =======================================================
@@ -237,6 +294,7 @@ export default function Navbar() {
             sm:px-5
           "
         >
+
           {/* =================================================
               LEFT — LOGO
           ================================================= */}
@@ -258,6 +316,7 @@ export default function Navbar() {
               "
               aria-label="Go to home"
             >
+
               {/* RV MARK */}
 
               <div
@@ -319,6 +378,7 @@ export default function Navbar() {
                   Corporate & Industrial Procurement
                 </div>
               </div>
+
             </button>
           </div>
 
@@ -337,6 +397,7 @@ export default function Navbar() {
               lg:flex
             "
           >
+
             {/* HOME */}
 
             <button
@@ -355,7 +416,6 @@ export default function Navbar() {
                 transition-all
                 duration-200
                 hover:bg-white/[0.06]
-                hover:text-white
               "
             >
               Home
@@ -366,6 +426,7 @@ export default function Navbar() {
             ================================================= */}
 
             <div className="relative">
+
               <button
                 type="button"
                 onClick={toggleProducts}
@@ -384,7 +445,6 @@ export default function Navbar() {
                   transition-all
                   duration-200
                   hover:bg-white/[0.06]
-                  hover:text-white
                 "
               >
                 Products
@@ -422,7 +482,9 @@ export default function Navbar() {
                     backdrop-blur-2xl
                   "
                 >
+
                   <div className="grid grid-cols-2 gap-3">
+
                     {/* =================================================
                         CORPORATE
                     ================================================= */}
@@ -436,10 +498,9 @@ export default function Navbar() {
                         p-3
                       "
                     >
-                      {/* CLICKABLE CATEGORY */}
 
                       <Link
-                        href="/solutions/corporate"
+                        href={`${BASE_PATH}/solutions/corporate`}
                         onClick={closeMenus}
                         className="
                           group
@@ -458,6 +519,7 @@ export default function Navbar() {
                           hover:bg-[#d89b32]/[0.07]
                         "
                       >
+
                         <div>
                           <p
                             className="
@@ -494,11 +556,11 @@ export default function Navbar() {
                             group-hover:text-[#d89b32]
                           "
                         />
+
                       </Link>
 
-                      {/* CORPORATE PRODUCTS */}
-
                       <div className="space-y-1">
+
                         {corporateProducts.map((product) => (
                           <Link
                             key={product.name}
@@ -520,6 +582,7 @@ export default function Navbar() {
                               hover:bg-white/[0.07]
                             "
                           >
+
                             <span
                               className="
                                 font-bold
@@ -542,8 +605,10 @@ export default function Navbar() {
                                 group-hover:text-[#d89b32]
                               "
                             />
+
                           </Link>
                         ))}
+
                       </div>
                     </div>
 
@@ -560,10 +625,9 @@ export default function Navbar() {
                         p-3
                       "
                     >
-                      {/* CLICKABLE CATEGORY */}
 
                       <Link
-                        href="/solutions/industrial"
+                        href={`${BASE_PATH}/solutions/industrial`}
                         onClick={closeMenus}
                         className="
                           group
@@ -582,6 +646,7 @@ export default function Navbar() {
                           hover:bg-[#d89b32]/[0.07]
                         "
                       >
+
                         <div>
                           <p
                             className="
@@ -618,11 +683,11 @@ export default function Navbar() {
                             group-hover:text-[#d89b32]
                           "
                         />
+
                       </Link>
 
-                      {/* INDUSTRIAL PRODUCTS */}
-
                       <div className="space-y-1">
+
                         {industrialProducts.map((product) => (
                           <Link
                             key={product.name}
@@ -644,6 +709,7 @@ export default function Navbar() {
                               hover:bg-white/[0.07]
                             "
                           >
+
                             <span
                               className="
                                 font-bold
@@ -666,13 +732,17 @@ export default function Navbar() {
                                 group-hover:text-[#d89b32]
                               "
                             />
+
                           </Link>
                         ))}
+
                       </div>
                     </div>
+
                   </div>
                 </div>
               )}
+
             </div>
 
             {/* =================================================
@@ -695,7 +765,6 @@ export default function Navbar() {
                 transition-all
                 duration-200
                 hover:bg-white/[0.06]
-                hover:text-white
               "
             >
               Brands
@@ -721,7 +790,6 @@ export default function Navbar() {
                 transition-all
                 duration-200
                 hover:bg-white/[0.06]
-                hover:text-white
               "
             >
               About
@@ -747,11 +815,11 @@ export default function Navbar() {
                 transition-all
                 duration-200
                 hover:bg-white/[0.06]
-                hover:text-white
               "
             >
               Contact
             </button>
+
           </nav>
 
           {/* =================================================
@@ -759,10 +827,9 @@ export default function Navbar() {
           ================================================= */}
 
           <div className="ml-auto hidden shrink-0 lg:block">
+
             <a
               href={quoteLink}
-              target="_blank"
-              rel="noopener noreferrer"
               className="
                 group
                 flex
@@ -783,11 +850,12 @@ export default function Navbar() {
                 hover:shadow-[0_12px_40px_rgba(216,155,50,0.22)]
               "
             >
+
               <Mail
-               size={14}
-               strokeWidth={2.5}
+                size={14}
+                strokeWidth={2.5}
               />
-              
+
               Request a Quote
 
               <ArrowUpRight
@@ -800,7 +868,9 @@ export default function Navbar() {
                   group-hover:-translate-y-0.5
                 "
               />
+
             </a>
+
           </div>
 
           {/* =================================================
@@ -831,12 +901,15 @@ export default function Navbar() {
               lg:hidden
             "
           >
+
             {mobileOpen ? (
               <X size={19} />
             ) : (
               <Menu size={19} />
             )}
+
           </button>
+
         </div>
 
         {/* =====================================================
@@ -860,6 +933,7 @@ export default function Navbar() {
               lg:hidden
             "
           >
+
             {/* HOME */}
 
             <button
@@ -904,6 +978,7 @@ export default function Navbar() {
                 hover:bg-white/[0.06]
               "
             >
+
               <span>Products</span>
 
               <ChevronDown
@@ -914,6 +989,7 @@ export default function Navbar() {
                   ${productsOpen ? "rotate-180" : ""}
                 `}
               />
+
             </button>
 
             {/* MOBILE PRODUCTS */}
@@ -931,6 +1007,7 @@ export default function Navbar() {
                   p-2
                 "
               >
+
                 {/* CORPORATE */}
 
                 <div
@@ -942,8 +1019,9 @@ export default function Navbar() {
                     p-2
                   "
                 >
+
                   <Link
-                    href="/solutions/corporate"
+                    href={`${BASE_PATH}/solutions/corporate`}
                     onClick={closeMenus}
                     className="
                       group
@@ -956,7 +1034,9 @@ export default function Navbar() {
                       hover:bg-[#d89b32]/[0.07]
                     "
                   >
+
                     <div>
+
                       <div
                         className="
                           text-[9px]
@@ -979,6 +1059,7 @@ export default function Navbar() {
                       >
                         Workplace Solutions
                       </div>
+
                     </div>
 
                     <ArrowUpRight
@@ -988,9 +1069,11 @@ export default function Navbar() {
                         group-hover:text-[#d89b32]
                       "
                     />
+
                   </Link>
 
                   <div className="mt-1 space-y-1">
+
                     {corporateProducts.map((product) => (
                       <Link
                         key={product.name}
@@ -1012,6 +1095,7 @@ export default function Navbar() {
                         {product.name}
                       </Link>
                     ))}
+
                   </div>
                 </div>
 
@@ -1026,8 +1110,9 @@ export default function Navbar() {
                     p-2
                   "
                 >
+
                   <Link
-                    href="/solutions/industrial"
+                    href={`${BASE_PATH}/solutions/industrial`}
                     onClick={closeMenus}
                     className="
                       group
@@ -1040,7 +1125,9 @@ export default function Navbar() {
                       hover:bg-[#d89b32]/[0.07]
                     "
                   >
+
                     <div>
+
                       <div
                         className="
                           text-[9px]
@@ -1063,6 +1150,7 @@ export default function Navbar() {
                       >
                         Industrial Solutions
                       </div>
+
                     </div>
 
                     <ArrowUpRight
@@ -1072,9 +1160,11 @@ export default function Navbar() {
                         group-hover:text-[#d89b32]
                       "
                     />
+
                   </Link>
 
                   <div className="mt-1 space-y-1">
+
                     {industrialProducts.map((product) => (
                       <Link
                         key={product.name}
@@ -1096,8 +1186,10 @@ export default function Navbar() {
                         {product.name}
                       </Link>
                     ))}
+
                   </div>
                 </div>
+
               </div>
             )}
 
@@ -1189,6 +1281,7 @@ export default function Navbar() {
                 text-[#0b1220]
               "
             >
+
               <MessageCircle
                 size={16}
                 strokeWidth={2.5}
@@ -1200,9 +1293,12 @@ export default function Navbar() {
                 size={15}
                 strokeWidth={2.5}
               />
+
             </a>
+
           </div>
         )}
+
       </header>
 
       {/* =====================================================
