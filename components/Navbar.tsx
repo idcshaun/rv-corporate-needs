@@ -862,7 +862,10 @@ export default function Navbar() {
                   rounded-2xl
                   border
                   border-white/[0.07]
-                  bg-linear-to-r from-[#d9dde3] via-[#eef0f3] to-[#c8cdd4]
+                  bg-linear-to-r 
+                  from-[#d9dde3] 
+                  via-[#eef0f3] 
+                  to-[#c8cdd4]
                   p-2
                 "
               >
