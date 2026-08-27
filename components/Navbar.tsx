@@ -1,82 +1,71 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ChevronDown,
-  Menu,
   Mail,
+  Menu,
   X,
 } from "lucide-react";
 
-/* =========================================================
-   GITHUB PAGES BASE PATH
-========================================================= */
+import "./navbar.css";
 
 const BASE_PATH = "/rv-corporate-needs";
-
-/* =========================================================
-   PRODUCTS
-========================================================= */
 
 const corporateProducts = [
   {
     name: "IT Products",
-    href: `${BASE_PATH}/solutions/corporate/it-products`,
+    href: `${BASE_PATH}/solutions/corporate/it-products/`,
   },
   {
     name: "Pantry",
-    href: `${BASE_PATH}/solutions/corporate/pantry`,
+    href: `${BASE_PATH}/solutions/corporate/pantry/`,
   },
   {
     name: "Stationery",
-    href: `${BASE_PATH}/solutions/corporate/stationery`,
+    href: `${BASE_PATH}/solutions/corporate/stationery/`,
   },
   {
     name: "Hygiene",
-    href: `${BASE_PATH}/solutions/corporate/hygiene`,
+    href: `${BASE_PATH}/solutions/corporate/hygiene/`,
   },
   {
     name: "Housekeeping",
-    href: `${BASE_PATH}/solutions/corporate/housekeeping`,
+    href: `${BASE_PATH}/solutions/corporate/housekeeping/`,
   },
   {
     name: "Corporate Gifting",
-    href: `${BASE_PATH}/solutions/corporate/corporate-gifting`,
+    href: `${BASE_PATH}/solutions/corporate/corporate-gifting/`,
   },
 ];
 
 const industrialProducts = [
   {
     name: "Bearings",
-    href: `${BASE_PATH}/solutions/industrial/bearings`,
+    href: `${BASE_PATH}/solutions/industrial/bearings/`,
   },
   {
     name: "Cleanroom",
-    href: `${BASE_PATH}/solutions/industrial/cleanroom-solutions`,
+    href: `${BASE_PATH}/solutions/industrial/cleanroom-solutions/`,
   },
   {
     name: "ESD",
-    href: `${BASE_PATH}/solutions/industrial/esd-solutions`,
+    href: `${BASE_PATH}/solutions/industrial/esd-solutions/`,
   },
   {
     name: "Fabrication",
-    href: `${BASE_PATH}/solutions/industrial/fabrication-unit`,
+    href: `${BASE_PATH}/solutions/industrial/fabrication-unit/`,
   },
   {
     name: "Garments",
-    href: `${BASE_PATH}/solutions/industrial/garments-accessories`,
+    href: `${BASE_PATH}/solutions/industrial/garments-accessories/`,
   },
   {
     name: "Lubricants",
-    href: `${BASE_PATH}/solutions/industrial/lubricants`,
+    href: `${BASE_PATH}/solutions/industrial/lubricants/`,
   },
 ];
-
-/* =========================================================
-   EMAIL
-========================================================= */
 
 const EMAIL = "sales@rvcorporateneeds.com";
 
@@ -98,30 +87,25 @@ Thank you.`
   return `mailto:${EMAIL}?subject=${subject}&body=${body}`;
 }
 
-/* =========================================================
-   MAIN NAVBAR
-========================================================= */
-
 export default function Navbar() {
-  const [productsOpen, setProductsOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [productsOpen, setProductsOpen] = useState(false);
 
-  const navbarRef = useRef<HTMLElement | null>(null);
+  const navbarRef = useRef<HTMLElement>(null);
 
   const quoteLink = getQuoteLink();
 
-  /* =======================================================
-     CLOSE WHEN CLICKING OUTSIDE
-  ======================================================= */
-
+  /*
+   * Close menus when clicking outside
+   */
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
       if (
         navbarRef.current &&
         !navbarRef.current.contains(event.target as Node)
       ) {
-        setProductsOpen(false);
         setMobileOpen(false);
+        setProductsOpen(false);
       }
     }
 
@@ -132,15 +116,14 @@ export default function Navbar() {
     };
   }, []);
 
-  /* =======================================================
-     ESCAPE KEY
-  ======================================================= */
-
+  /*
+   * Escape key
+   */
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setProductsOpen(false);
         setMobileOpen(false);
+        setProductsOpen(false);
       }
     }
 
@@ -151,52 +134,30 @@ export default function Navbar() {
     };
   }, []);
 
-  /* =======================================================
-     LOCK BODY SCROLL WHEN MOBILE MENU IS OPEN
-  ======================================================= */
-
+  /*
+   * Prevent background scrolling on mobile
+   */
   useEffect(() => {
     if (mobileOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.classList.add("nav-mobile-open");
     } else {
-      document.body.style.overflow = "";
+      document.body.classList.remove("nav-mobile-open");
     }
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.classList.remove("nav-mobile-open");
     };
   }, [mobileOpen]);
 
-  /* =======================================================
-     CLOSE MENUS
-  ======================================================= */
-
   function closeMenus() {
-    setProductsOpen(false);
     setMobileOpen(false);
+    setProductsOpen(false);
   }
 
-  /* =======================================================
-     PRODUCTS TOGGLE
-  ======================================================= */
-
-  function toggleProducts() {
-    setProductsOpen((current) => !current);
-  }
-
-  /* =======================================================
-     HOME
-  ======================================================= */
-
-  function handleHome() {
+  function goHome() {
     closeMenus();
 
-    const currentPath = window.location.pathname;
-
-    if (
-      currentPath === BASE_PATH ||
-      currentPath === `${BASE_PATH}/`
-    ) {
+    if (window.location.pathname === `${BASE_PATH}/`) {
       window.scrollTo({
         top: 0,
         behavior: "smooth",
@@ -208,1012 +169,451 @@ export default function Navbar() {
     window.location.href = `${BASE_PATH}/`;
   }
 
-  /* =======================================================
-     SECTION NAVIGATION
-  ======================================================= */
-
-  function scrollToSection(sectionId: string) {
+  function goToSection(section: string) {
     closeMenus();
 
-    const currentPath = window.location.pathname;
-
     const isHome =
-      currentPath === BASE_PATH ||
-      currentPath === `${BASE_PATH}/`;
+      window.location.pathname === BASE_PATH ||
+      window.location.pathname === `${BASE_PATH}/`;
 
     if (!isHome) {
-      window.location.href = `${BASE_PATH}/#${sectionId}`;
+      window.location.href = `${BASE_PATH}/#${section}`;
       return;
     }
 
-    const element = document.getElementById(sectionId);
+    const element = document.getElementById(section);
 
-    if (!element) {
-      window.location.href = `${BASE_PATH}/#${sectionId}`;
-      return;
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
-
-    element.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
   }
 
-  /* =======================================================
-     RENDER
-  ======================================================= */
+  function toggleMobile() {
+    setMobileOpen((current) => !current);
+    setProductsOpen(false);
+  }
+
+  function toggleProducts() {
+    setProductsOpen((current) => !current);
+  }
 
   return (
     <>
-      {/* =====================================================
-          NAVBAR
-      ====================================================== */}
-
       <header
         ref={navbarRef}
-        className="
-          sticky
-          top-0
-          z-[100]
-          w-full
-          px-3
-          pt-3
-          sm:px-5
-          lg:px-6
-        "
+        className="site-navbar"
       >
-        {/* ===================================================
-            MAIN NAVBAR
-        ==================================================== */}
+        <div className="navbar-shell">
 
-        <div
-          className="
-            relative
-            mx-auto
-            w-full
-            max-w-7xl
-            rounded-[22px]
-            border
-            border-[#aeb4bd]
-            bg-[#c9cdd3]
-            shadow-[0_18px_50px_rgba(15,23,42,0.18)]
-          "
-        >
-          <div
-            className="
-              flex
-              min-h-[68px]
-              items-center
-              px-3
-              sm:px-5
-              lg:px-6
-            "
+          {/* LOGO */}
+
+          <button
+            type="button"
+            className="navbar-brand"
+            onClick={goHome}
+            aria-label="Go to RV Corporate Needs home"
           >
-            {/* =================================================
-                LOGO
-            ================================================= */}
+            <span className="brand-mark">
+              RV
+            </span>
+
+            <span className="brand-copy">
+              <span className="brand-name">
+                RV Corporate Needs
+              </span>
+
+              <span className="brand-tagline">
+                Corporate & Industrial Procurement
+              </span>
+            </span>
+          </button>
+
+          {/* DESKTOP NAV */}
+
+          <nav className="desktop-nav">
 
             <button
               type="button"
-              onClick={handleHome}
-              aria-label="Go to home"
-              className="
-                group
-                flex
-                shrink-0
-                items-center
-                gap-3
-                rounded-xl
-                outline-none
-              "
+              onClick={goHome}
+              className="nav-link"
             >
-              {/* RV MARK */}
-
-              <div
-                className="
-                  flex
-                  h-11
-                  w-11
-                  shrink-0
-                  items-center
-                  justify-center
-                  rounded-[14px]
-                  border
-                  border-[#aab0b9]
-                  bg-[#111827]
-                  shadow-[0_5px_15px_rgba(15,23,42,0.18)]
-                  transition-all
-                  duration-200
-                  group-hover:bg-[#172033]
-                "
-              >
-                <span
-                  className="
-                    text-[17px]
-                    font-black
-                    leading-none
-                    tracking-[-0.08em]
-                    text-white
-                  "
-                >
-                  RV
-                </span>
-              </div>
-
-              {/* BRAND TEXT */}
-
-              <div className="hidden sm:block">
-                <div
-                  className="
-                    text-[13px]
-                    font-extrabold
-                    leading-none
-                    tracking-[-0.03em]
-                    text-[#111827]
-                  "
-                >
-                  RV Corporate Needs
-                </div>
-
-                <div
-                  className="
-                    mt-1
-                    text-[7px]
-                    font-bold
-                    uppercase
-                    tracking-[0.20em]
-                    text-[#475569]
-                  "
-                >
-                  Corporate & Industrial Procurement
-                </div>
-              </div>
+              Home
             </button>
 
-            {/* =================================================
-                DESKTOP NAVIGATION
-            ================================================= */}
-
-            <nav
-              className="
-                absolute
-                left-1/2
-                hidden
-                -translate-x-1/2
-                items-center
-                gap-1
-                lg:flex
-              "
-            >
-              {/* HOME */}
+            <div className="products-wrapper">
 
               <button
                 type="button"
-                onClick={handleHome}
-                className="
-                  flex
-                  h-10
-                  items-center
-                  justify-center
-                  rounded-xl
-                  px-4
-                  text-[13px]
-                  font-bold
-                  text-[#111827]
-                  transition-all
-                  duration-200
-                  hover:bg-white/40
-                "
+                onClick={toggleProducts}
+                className={`nav-link products-button ${
+                  productsOpen ? "active" : ""
+                }`}
+                aria-expanded={productsOpen}
               >
-                Home
+                Products
+
+                <ChevronDown
+                  size={15}
+                  strokeWidth={2.3}
+                  className={
+                    productsOpen
+                      ? "chevron rotated"
+                      : "chevron"
+                  }
+                />
               </button>
 
-              {/* PRODUCTS */}
+              {productsOpen && (
+                <div className="desktop-dropdown">
 
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={toggleProducts}
-                  aria-expanded={productsOpen}
-                  className="
-                    flex
-                    h-10
-                    items-center
-                    justify-center
-                    gap-1.5
-                    rounded-xl
-                    px-4
-                    text-[13px]
-                    font-bold
-                    text-[#111827]
-                    transition-all
-                    duration-200
-                    hover:bg-white/40
-                  "
-                >
-                  Products
+                  {/* CORPORATE */}
 
-                  <ChevronDown
-                    size={15}
-                    strokeWidth={2.4}
-                    className={`
-                      transition-transform
-                      duration-200
-                      ${productsOpen ? "rotate-180" : ""}
-                    `}
-                  />
-                </button>
+                  <div className="dropdown-column">
 
-                {/* DESKTOP DROPDOWN */}
+                    <a
+                      href={`${BASE_PATH}/solutions/corporate/`}
+                      onClick={closeMenus}
+                      className="dropdown-heading"
+                    >
+                      <span>
+                        <span className="dropdown-label">
+                          CORPORATE
+                        </span>
 
-                {productsOpen && (
-                  <div
-                    className="
-                      absolute
-                      left-1/2
-                      top-[54px]
-                      w-[620px]
-                      -translate-x-1/2
-                      overflow-hidden
-                      rounded-[22px]
-                      border
-                      border-[#aeb4bd]
-                      bg-[#d5d8dd]
-                      p-3
-                      shadow-[0_25px_70px_rgba(15,23,42,0.25)]
-                    "
-                  >
-                    <div className="grid grid-cols-2 gap-3">
-                      {/* CORPORATE */}
+                        <span className="dropdown-title">
+                          Workplace Solutions
+                        </span>
+                      </span>
 
-                      <div
-                        className="
-                          rounded-[18px]
-                          border
-                          border-[#b8bec6]
-                          bg-[#e0e2e6]
-                          p-2
-                        "
-                      >
-                        <Link
-                          href={`${BASE_PATH}/solutions/corporate`}
-                          onClick={closeMenus}
-                          className="
-                            group
-                            flex
-                            items-center
-                            justify-between
-                            rounded-xl
-                            px-3
-                            py-3
-                            transition-all
-                            hover:bg-white/60
-                          "
-                        >
-                          <div>
-                            <p
-                              className="
-                                text-[9px]
-                                font-extrabold
-                                uppercase
-                                tracking-[0.18em]
-                                text-[#b47716]
-                              "
-                            >
-                              Corporate
-                            </p>
+                      <ArrowUpRight
+                        size={17}
+                      />
+                    </a>
 
-                            <p
-                              className="
-                                mt-1
-                                text-[12px]
-                                font-extrabold
-                                text-[#111827]
-                              "
-                            >
-                              Workplace Solutions
-                            </p>
-                          </div>
+                    <div className="dropdown-items">
+                      {corporateProducts.map(
+                        (product) => (
+                          <a
+                            key={product.name}
+                            href={product.href}
+                            onClick={closeMenus}
+                            className="dropdown-item"
+                          >
+                            <span>
+                              {product.name}
+                            </span>
 
-                          <ArrowUpRight
-                            size={17}
-                            className="
-                              text-[#64748b]
-                              transition-all
-                              group-hover:-translate-y-0.5
-                              group-hover:translate-x-0.5
-                              group-hover:text-[#b47716]
-                            "
-                          />
-                        </Link>
-
-                        <div className="mt-1 space-y-1">
-                          {corporateProducts.map((product) => (
-                            <Link
-                              key={product.name}
-                              href={product.href}
-                              onClick={closeMenus}
-                              className="
-                                group
-                                flex
-                                items-center
-                                justify-between
-                                rounded-lg
-                                px-3
-                                py-2.5
-                                text-[12px]
-                                font-bold
-                                text-[#334155]
-                                transition-all
-                                hover:bg-white/60
-                                hover:text-[#111827]
-                              "
-                            >
-                              <span>{product.name}</span>
-
-                              <ArrowUpRight
-                                size={13}
-                                className="
-                                  opacity-0
-                                  transition-all
-                                  group-hover:translate-x-0.5
-                                  group-hover:-translate-y-0.5
-                                  group-hover:opacity-100
-                                "
-                              />
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* INDUSTRIAL */}
-
-                      <div
-                        className="
-                          rounded-[18px]
-                          border
-                          border-[#b8bec6]
-                          bg-[#e0e2e6]
-                          p-2
-                        "
-                      >
-                        <Link
-                          href={`${BASE_PATH}/solutions/industrial`}
-                          onClick={closeMenus}
-                          className="
-                            group
-                            flex
-                            items-center
-                            justify-between
-                            rounded-xl
-                            px-3
-                            py-3
-                            transition-all
-                            hover:bg-white/60
-                          "
-                        >
-                          <div>
-                            <p
-                              className="
-                                text-[9px]
-                                font-extrabold
-                                uppercase
-                                tracking-[0.18em]
-                                text-[#b47716]
-                              "
-                            >
-                              Industrial
-                            </p>
-
-                            <p
-                              className="
-                                mt-1
-                                text-[12px]
-                                font-extrabold
-                                text-[#111827]
-                              "
-                            >
-                              Industrial Solutions
-                            </p>
-                          </div>
-
-                          <ArrowUpRight
-                            size={17}
-                            className="
-                              text-[#64748b]
-                              transition-all
-                              group-hover:-translate-y-0.5
-                              group-hover:translate-x-0.5
-                              group-hover:text-[#b47716]
-                            "
-                          />
-                        </Link>
-
-                        <div className="mt-1 space-y-1">
-                          {industrialProducts.map((product) => (
-                            <Link
-                              key={product.name}
-                              href={product.href}
-                              onClick={closeMenus}
-                              className="
-                                group
-                                flex
-                                items-center
-                                justify-between
-                                rounded-lg
-                                px-3
-                                py-2.5
-                                text-[12px]
-                                font-bold
-                                text-[#334155]
-                                transition-all
-                                hover:bg-white/60
-                                hover:text-[#111827]
-                              "
-                            >
-                              <span>{product.name}</span>
-
-                              <ArrowUpRight
-                                size={13}
-                                className="
-                                  opacity-0
-                                  transition-all
-                                  group-hover:translate-x-0.5
-                                  group-hover:-translate-y-0.5
-                                  group-hover:opacity-100
-                                "
-                              />
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
+                            <ArrowUpRight
+                              size={13}
+                            />
+                          </a>
+                        )
+                      )}
                     </div>
                   </div>
-                )}
-              </div>
 
-              {/* BRANDS */}
+                  {/* INDUSTRIAL */}
 
-              <button
-                type="button"
-                onClick={() => scrollToSection("brands")}
-                className="
-                  flex
-                  h-10
-                  items-center
-                  justify-center
-                  rounded-xl
-                  px-4
-                  text-[13px]
-                  font-bold
-                  text-[#111827]
-                  transition-all
-                  hover:bg-white/40
-                "
-              >
-                Brands
-              </button>
+                  <div className="dropdown-column">
 
-              {/* ABOUT */}
+                    <a
+                      href={`${BASE_PATH}/solutions/industrial/`}
+                      onClick={closeMenus}
+                      className="dropdown-heading"
+                    >
+                      <span>
+                        <span className="dropdown-label">
+                          INDUSTRIAL
+                        </span>
 
-              <button
-                type="button"
-                onClick={() => scrollToSection("about")}
-                className="
-                  flex
-                  h-10
-                  items-center
-                  justify-center
-                  rounded-xl
-                  px-4
-                  text-[13px]
-                  font-bold
-                  text-[#111827]
-                  transition-all
-                  hover:bg-white/40
-                "
-              >
-                About
-              </button>
+                        <span className="dropdown-title">
+                          Industrial Solutions
+                        </span>
+                      </span>
 
-              {/* CONTACT */}
+                      <ArrowUpRight
+                        size={17}
+                      />
+                    </a>
 
-              <button
-                type="button"
-                onClick={() => scrollToSection("contact")}
-                className="
-                  flex
-                  h-10
-                  items-center
-                  justify-center
-                  rounded-xl
-                  px-4
-                  text-[13px]
-                  font-bold
-                  text-[#111827]
-                  transition-all
-                  hover:bg-white/40
-                "
-              >
-                Contact
-              </button>
-            </nav>
+                    <div className="dropdown-items">
+                      {industrialProducts.map(
+                        (product) => (
+                          <a
+                            key={product.name}
+                            href={product.href}
+                            onClick={closeMenus}
+                            className="dropdown-item"
+                          >
+                            <span>
+                              {product.name}
+                            </span>
 
-            {/* =================================================
-                DESKTOP QUOTE BUTTON
-            ================================================= */}
+                            <ArrowUpRight
+                              size={13}
+                            />
+                          </a>
+                        )
+                      )}
+                    </div>
+                  </div>
 
-            <div className="ml-auto hidden lg:block">
-              <a
-                href={quoteLink}
-                className="
-                  group
-                  flex
-                  h-10
-                  items-center
-                  gap-2
-                  rounded-xl
-                  bg-[#d89b32]
-                  px-4
-                  text-[11px]
-                  font-extrabold
-                  text-[#111827]
-                  shadow-[0_8px_25px_rgba(216,155,50,0.22)]
-                  transition-all
-                  duration-200
-                  hover:-translate-y-0.5
-                  hover:bg-[#e5ab49]
-                "
-              >
-                <Mail
-                  size={14}
-                  strokeWidth={2.5}
-                />
-
-                Request a Quote
-
-                <ArrowUpRight
-                  size={14}
-                  strokeWidth={2.5}
-                  className="
-                    transition-transform
-                    group-hover:-translate-y-0.5
-                    group-hover:translate-x-0.5
-                  "
-                />
-              </a>
-            </div>
-
-            {/* =================================================
-                MOBILE MENU BUTTON
-            ================================================= */}
-
-            <button
-              type="button"
-              onClick={() => {
-                setMobileOpen((current) => !current);
-                setProductsOpen(false);
-              }}
-              aria-label="Toggle navigation"
-              aria-expanded={mobileOpen}
-              className="
-                ml-auto
-                flex
-                h-11
-                w-11
-                items-center
-                justify-center
-                rounded-[14px]
-                border
-                border-[#aeb4bd]
-                bg-[#111827]
-                text-white
-                shadow-[0_5px_15px_rgba(15,23,42,0.15)]
-                transition-all
-                hover:bg-[#172033]
-                lg:hidden
-              "
-            >
-              {mobileOpen ? (
-                <X size={20} />
-              ) : (
-                <Menu size={20} />
+                </div>
               )}
-            </button>
-          </div>
-
-          {/* ===================================================
-              MOBILE MENU
-          ==================================================== */}
-
-          {mobileOpen && (
-            <div
-              className="
-                border-t
-                border-[#aeb4bd]
-                px-3
-                pb-3
-                lg:hidden
-              "
-            >
-              <div
-                className="
-                  mt-3
-                  max-h-[calc(100vh-105px)]
-                  overflow-y-auto
-                  overscroll-contain
-                  rounded-[18px]
-                  border
-                  border-[#b3b8c0]
-                  bg-[#d5d8dd]
-                  p-2
-                "
-              >
-                {/* HOME */}
-
-                <button
-                  type="button"
-                  onClick={handleHome}
-                  className="
-                    flex
-                    min-h-[48px]
-                    w-full
-                    items-center
-                    rounded-xl
-                    px-4
-                    text-left
-                    text-[15px]
-                    font-bold
-                    text-[#111827]
-                    transition-all
-                    hover:bg-white/60
-                  "
-                >
-                  Home
-                </button>
-
-                {/* PRODUCTS */}
-
-                <button
-                  type="button"
-                  onClick={toggleProducts}
-                  aria-expanded={productsOpen}
-                  className="
-                    flex
-                    min-h-[48px]
-                    w-full
-                    items-center
-                    justify-between
-                    rounded-xl
-                    px-4
-                    text-left
-                    text-[15px]
-                    font-bold
-                    text-[#111827]
-                    transition-all
-                    hover:bg-white/60
-                  "
-                >
-                  <span>Products</span>
-
-                  <ChevronDown
-                    size={18}
-                    className={`
-                      transition-transform
-                      duration-200
-                      ${productsOpen ? "rotate-180" : ""}
-                    `}
-                  />
-                </button>
-
-                {/* MOBILE PRODUCT LIST */}
-
-                {productsOpen && (
-                  <div
-                    className="
-                      mt-1
-                      space-y-2
-                      rounded-[16px]
-                      border
-                      border-[#b7bcc4]
-                      bg-[#cbd0d6]
-                      p-2
-                    "
-                  >
-                    {/* CORPORATE */}
-
-                    <div
-                      className="
-                        overflow-hidden
-                        rounded-[14px]
-                        border
-                        border-[#b5bac2]
-                        bg-[#e0e2e6]
-                      "
-                    >
-                      <Link
-                        href={`${BASE_PATH}/solutions/corporate`}
-                        onClick={closeMenus}
-                        className="
-                          flex
-                          min-h-[66px]
-                          items-center
-                          justify-between
-                          px-4
-                          py-3
-                          transition-all
-                          hover:bg-white/60
-                        "
-                      >
-                        <div>
-                          <div
-                            className="
-                              text-[10px]
-                              font-extrabold
-                              uppercase
-                              tracking-[0.18em]
-                              text-[#b47716]
-                            "
-                          >
-                            Corporate
-                          </div>
-
-                          <div
-                            className="
-                              mt-1
-                              text-[14px]
-                              font-extrabold
-                              text-[#111827]
-                            "
-                          >
-                            Workplace Solutions
-                          </div>
-                        </div>
-
-                        <ArrowUpRight
-                          size={17}
-                          className="text-[#64748b]"
-                        />
-                      </Link>
-
-                      <div
-                        className="
-                          border-t
-                          border-[#c0c4ca]
-                          px-2
-                          py-2
-                        "
-                      >
-                        {corporateProducts.map((product) => (
-                          <Link
-                            key={product.name}
-                            href={product.href}
-                            onClick={closeMenus}
-                            className="
-                              flex
-                              min-h-[44px]
-                              items-center
-                              rounded-lg
-                              px-3
-                              text-[14px]
-                              font-semibold
-                              text-[#334155]
-                              transition-all
-                              hover:bg-white/60
-                              hover:text-[#111827]
-                            "
-                          >
-                            {product.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* INDUSTRIAL */}
-
-                    <div
-                      className="
-                        overflow-hidden
-                        rounded-[14px]
-                        border
-                        border-[#b5bac2]
-                        bg-[#e0e2e6]
-                      "
-                    >
-                      <Link
-                        href={`${BASE_PATH}/solutions/industrial`}
-                        onClick={closeMenus}
-                        className="
-                          flex
-                          min-h-[66px]
-                          items-center
-                          justify-between
-                          px-4
-                          py-3
-                          transition-all
-                          hover:bg-white/60
-                        "
-                      >
-                        <div>
-                          <div
-                            className="
-                              text-[10px]
-                              font-extrabold
-                              uppercase
-                              tracking-[0.18em]
-                              text-[#b47716]
-                            "
-                          >
-                            Industrial
-                          </div>
-
-                          <div
-                            className="
-                              mt-1
-                              text-[14px]
-                              font-extrabold
-                              text-[#111827]
-                            "
-                          >
-                            Industrial Solutions
-                          </div>
-                        </div>
-
-                        <ArrowUpRight
-                          size={17}
-                          className="text-[#64748b]"
-                        />
-                      </Link>
-
-                      <div
-                        className="
-                          border-t
-                          border-[#c0c4ca]
-                          px-2
-                          py-2
-                        "
-                      >
-                        {industrialProducts.map((product) => (
-                          <Link
-                            key={product.name}
-                            href={product.href}
-                            onClick={closeMenus}
-                            className="
-                              flex
-                              min-h-[44px]
-                              items-center
-                              rounded-lg
-                              px-3
-                              text-[14px]
-                              font-semibold
-                              text-[#334155]
-                              transition-all
-                              hover:bg-white/60
-                              hover:text-[#111827]
-                            "
-                          >
-                            {product.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* BRANDS */}
-
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("brands")}
-                  className="
-                    mt-1
-                    flex
-                    min-h-[48px]
-                    w-full
-                    items-center
-                    rounded-xl
-                    px-4
-                    text-left
-                    text-[15px]
-                    font-bold
-                    text-[#111827]
-                    transition-all
-                    hover:bg-white/60
-                  "
-                >
-                  Brands
-                </button>
-
-                {/* ABOUT */}
-
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("about")}
-                  className="
-                    flex
-                    min-h-[48px]
-                    w-full
-                    items-center
-                    rounded-xl
-                    px-4
-                    text-left
-                    text-[15px]
-                    font-bold
-                    text-[#111827]
-                    transition-all
-                    hover:bg-white/60
-                  "
-                >
-                  About
-                </button>
-
-                {/* CONTACT */}
-
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("contact")}
-                  className="
-                    flex
-                    min-h-[48px]
-                    w-full
-                    items-center
-                    rounded-xl
-                    px-4
-                    text-left
-                    text-[15px]
-                    font-bold
-                    text-[#111827]
-                    transition-all
-                    hover:bg-white/60
-                  "
-                >
-                  Contact
-                </button>
-
-                {/* MOBILE QUOTE */}
-
-                <a
-                  href={quoteLink}
-                  onClick={closeMenus}
-                  className="
-                    mt-2
-                    flex
-                    min-h-[52px]
-                    w-full
-                    items-center
-                    justify-center
-                    gap-2
-                    rounded-xl
-                    bg-[#d89b32]
-                    text-[13px]
-                    font-extrabold
-                    text-[#111827]
-                    shadow-[0_8px_20px_rgba(216,155,50,0.18)]
-                  "
-                >
-                  <Mail
-                    size={16}
-                    strokeWidth={2.5}
-                  />
-
-                  Request a Quote
-
-                  <ArrowUpRight
-                    size={16}
-                    strokeWidth={2.5}
-                  />
-                </a>
-              </div>
             </div>
-          )}
+
+            <button
+              type="button"
+              onClick={() =>
+                goToSection("brands")
+              }
+              className="nav-link"
+            >
+              Brands
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                goToSection("about")
+              }
+              className="nav-link"
+            >
+              About
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                goToSection("contact")
+              }
+              className="nav-link"
+            >
+              Contact
+            </button>
+
+          </nav>
+
+          {/* DESKTOP QUOTE */}
+
+          <a
+            href={quoteLink}
+            className="quote-button desktop-quote"
+          >
+            <Mail
+              size={15}
+              strokeWidth={2.5}
+            />
+
+            <span>
+              Request a Quote
+            </span>
+
+            <ArrowUpRight
+              size={15}
+              strokeWidth={2.5}
+            />
+          </a>
+
+          {/* MOBILE BUTTON */}
+
+          <button
+            type="button"
+            onClick={toggleMobile}
+            className="mobile-menu-button"
+            aria-label={
+              mobileOpen
+                ? "Close navigation"
+                : "Open navigation"
+            }
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? (
+              <X size={21} />
+            ) : (
+              <Menu size={21} />
+            )}
+          </button>
+
         </div>
+
+        {/* MOBILE MENU */}
+
+        {mobileOpen && (
+          <div className="mobile-panel">
+
+            <button
+              type="button"
+              onClick={goHome}
+              className="mobile-nav-link"
+            >
+              Home
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleProducts}
+              className="mobile-nav-link"
+              aria-expanded={productsOpen}
+            >
+              <span>
+                Products
+              </span>
+
+              <ChevronDown
+                size={18}
+                className={
+                  productsOpen
+                    ? "chevron rotated"
+                    : "chevron"
+                }
+              />
+            </button>
+
+            {productsOpen && (
+              <div className="mobile-products">
+
+                {/* CORPORATE */}
+
+                <div className="mobile-product-group">
+
+                  <a
+                    href={`${BASE_PATH}/solutions/corporate/`}
+                    onClick={closeMenus}
+                    className="mobile-category"
+                  >
+                    <span>
+                      <span className="dropdown-label">
+                        CORPORATE
+                      </span>
+
+                      <span className="mobile-category-title">
+                        Workplace Solutions
+                      </span>
+                    </span>
+
+                    <ArrowUpRight
+                      size={17}
+                    />
+                  </a>
+
+                  {corporateProducts.map(
+                    (product) => (
+                      <a
+                        key={product.name}
+                        href={product.href}
+                        onClick={closeMenus}
+                        className="mobile-product"
+                      >
+                        {product.name}
+                      </a>
+                    )
+                  )}
+
+                </div>
+
+                {/* INDUSTRIAL */}
+
+                <div className="mobile-product-group">
+
+                  <a
+                    href={`${BASE_PATH}/solutions/industrial/`}
+                    onClick={closeMenus}
+                    className="mobile-category"
+                  >
+                    <span>
+                      <span className="dropdown-label">
+                        INDUSTRIAL
+                      </span>
+
+                      <span className="mobile-category-title">
+                        Industrial Solutions
+                      </span>
+                    </span>
+
+                    <ArrowUpRight
+                      size={17}
+                    />
+                  </a>
+
+                  {industrialProducts.map(
+                    (product) => (
+                      <a
+                        key={product.name}
+                        href={product.href}
+                        onClick={closeMenus}
+                        className="mobile-product"
+                      >
+                        {product.name}
+                      </a>
+                    )
+                  )}
+
+                </div>
+
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() =>
+                goToSection("brands")
+              }
+              className="mobile-nav-link"
+            >
+              Brands
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                goToSection("about")
+              }
+              className="mobile-nav-link"
+            >
+              About
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                goToSection("contact")
+              }
+              className="mobile-nav-link"
+            >
+              Contact
+            </button>
+
+            <a
+              href={quoteLink}
+              onClick={closeMenus}
+              className="quote-button mobile-quote"
+            >
+              <Mail
+                size={16}
+                strokeWidth={2.5}
+              />
+
+              <span>
+                Request a Quote
+              </span>
+
+              <ArrowUpRight
+                size={16}
+                strokeWidth={2.5}
+              />
+            </a>
+
+          </div>
+        )}
       </header>
 
-      {/* =====================================================
-          CONTENT OFFSET
-      ====================================================== */}
+      {/* NAVBAR SPACE */}
 
-      <div className="h-3" />
+      <div className="navbar-spacer" />
     </>
   );
 }
