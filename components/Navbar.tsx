@@ -8,6 +8,7 @@ import {
   Menu,
   Mail,
   X,
+  MessageCircle,
 } from "lucide-react";
 
 /* =========================================================
