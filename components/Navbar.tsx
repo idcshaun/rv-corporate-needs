@@ -1,14 +1,14 @@
 "use client";
 
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ChevronDown,
-  Mail,
   Menu,
-  MessageCircle,
+  Mail,
   X,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 
 /* =========================================================
    GITHUB PAGES BASE PATH
@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from "react";
 const BASE_PATH = "/rv-corporate-needs";
 
 /* =========================================================
-   DATA
+   PRODUCTS
 ========================================================= */
 
 const corporateProducts = [
@@ -74,10 +74,6 @@ const industrialProducts = [
   },
 ];
 
-const CORPORATE_URL = `${BASE_PATH}/solutions/corporate`;
-const INDUSTRIAL_URL = `${BASE_PATH}/solutions/industrial`;
-const HOME_URL = `${BASE_PATH}/`;
-
 /* =========================================================
    EMAIL
 ========================================================= */
@@ -103,7 +99,7 @@ Thank you.`
 }
 
 /* =========================================================
-   NAVBAR
+   MAIN NAVBAR
 ========================================================= */
 
 export default function Navbar() {
@@ -111,6 +107,8 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navbarRef = useRef<HTMLElement | null>(null);
+
+  const quoteLink = getQuoteLink();
 
   /* =======================================================
      CLOSE WHEN CLICKING OUTSIDE
@@ -154,6 +152,22 @@ export default function Navbar() {
   }, []);
 
   /* =======================================================
+     LOCK BODY SCROLL WHEN MOBILE MENU IS OPEN
+  ======================================================= */
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  /* =======================================================
      CLOSE MENUS
   ======================================================= */
 
@@ -161,6 +175,10 @@ export default function Navbar() {
     setProductsOpen(false);
     setMobileOpen(false);
   }
+
+  /* =======================================================
+     PRODUCTS TOGGLE
+  ======================================================= */
 
   function toggleProducts() {
     setProductsOpen((current) => !current);
@@ -173,15 +191,21 @@ export default function Navbar() {
   function handleHome() {
     closeMenus();
 
-    if (window.location.pathname === `${BASE_PATH}/`) {
+    const currentPath = window.location.pathname;
+
+    if (
+      currentPath === BASE_PATH ||
+      currentPath === `${BASE_PATH}/`
+    ) {
       window.scrollTo({
         top: 0,
         behavior: "smooth",
       });
+
       return;
     }
 
-    window.location.href = HOME_URL;
+    window.location.href = `${BASE_PATH}/`;
   }
 
   /* =======================================================
@@ -193,14 +217,21 @@ export default function Navbar() {
 
     const currentPath = window.location.pathname;
 
-    if (currentPath !== `${BASE_PATH}/`) {
-      window.location.href = `${HOME_URL}#${sectionId}`;
+    const isHome =
+      currentPath === BASE_PATH ||
+      currentPath === `${BASE_PATH}/`;
+
+    if (!isHome) {
+      window.location.href = `${BASE_PATH}/#${sectionId}`;
       return;
     }
 
     const element = document.getElementById(sectionId);
 
-    if (!element) return;
+    if (!element) {
+      window.location.href = `${BASE_PATH}/#${sectionId}`;
+      return;
+    }
 
     element.scrollIntoView({
       behavior: "smooth",
@@ -209,322 +240,771 @@ export default function Navbar() {
   }
 
   /* =======================================================
-     QUOTE
-  ======================================================= */
-
-  const quoteLink = getQuoteLink();
-
-  /* =======================================================
      RENDER
   ======================================================= */
 
   return (
     <>
+      {/* =====================================================
+          NAVBAR
+      ====================================================== */}
+
       <header
         ref={navbarRef}
         className="
-          fixed
-          left-0
-          right-0
+          sticky
           top-0
           z-[100]
-          px-4
-          pt-4
-          sm:px-6
-          lg:px-8
+          w-full
+          px-3
+          pt-3
+          sm:px-5
+          lg:px-6
         "
       >
-        {/* =================================================
-            DESKTOP / MOBILE NAVBAR
-        ================================================= */}
+        {/* ===================================================
+            MAIN NAVBAR
+        ==================================================== */}
 
         <div
           className="
             relative
             mx-auto
-            flex
-            h-[72px]
+            w-full
             max-w-7xl
-            items-center
-            rounded-[24px]
+            rounded-[22px]
             border
-            border-white/10
-            bg-[#0b1220]
-            px-4
-            shadow-[0_20px_70px_rgba(0,0,0,0.35)]
-            backdrop-blur-2xl
-            sm:px-5
+            border-[#aeb4bd]
+            bg-[#c9cdd3]
+            shadow-[0_18px_50px_rgba(15,23,42,0.18)]
           "
         >
-          {/* =================================================
-              LOGO
-          ================================================= */}
-
-          <button
-            type="button"
-            onClick={handleHome}
-            aria-label="Go to home"
+          <div
             className="
-              group
               flex
-              shrink-0
+              min-h-[68px]
               items-center
-              gap-3
-              rounded-xl
-              px-1
-              py-1
-              text-left
+              px-3
+              sm:px-5
+              lg:px-6
             "
           >
-            <div
-              className="
-                flex
-                h-10
-                w-10
-                shrink-0
-                items-center
-                justify-center
-                rounded-xl
-                border
-                border-white/10
-                bg-white/[0.05]
-                transition-all
-                duration-300
-                group-hover:border-[#d89b32]/40
-                group-hover:bg-[#d89b32]/10
-              "
-            >
-              <span
-                className="
-                  text-[17px]
-                  font-black
-                  leading-none
-                  tracking-[-0.08em]
-                  text-white
-                "
-              >
-                RV
-              </span>
-            </div>
-
-            <div className="hidden sm:block">
-              <div
-                className="
-                  text-[13px]
-                  font-extrabold
-                  leading-none
-                  tracking-[-0.03em]
-                  text-white
-                "
-              >
-                RV Corporate Needs
-              </div>
-
-              <div
-                className="
-                  mt-1
-                  text-[7px]
-                  font-bold
-                  uppercase
-                  tracking-[0.20em]
-                  text-white/40
-                "
-              >
-                Corporate & Industrial Procurement
-              </div>
-            </div>
-          </button>
-
-          {/* =================================================
-              DESKTOP NAVIGATION
-          ================================================= */}
-
-          <nav
-            className="
-              absolute
-              left-1/2
-              hidden
-              -translate-x-1/2
-              items-center
-              gap-1
-              lg:flex
-            "
-          >
-            {/* HOME */}
+            {/* =================================================
+                LOGO
+            ================================================= */}
 
             <button
               type="button"
               onClick={handleHome}
+              aria-label="Go to home"
               className="
+                group
                 flex
-                h-10
+                shrink-0
                 items-center
-                justify-center
+                gap-3
                 rounded-xl
-                px-4
-                text-[12px]
-                font-bold
-                text-white
-                transition-all
-                hover:bg-white/[0.06]
+                outline-none
               "
             >
-              Home
+              {/* RV MARK */}
+
+              <div
+                className="
+                  flex
+                  h-11
+                  w-11
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-[14px]
+                  border
+                  border-[#aab0b9]
+                  bg-[#111827]
+                  shadow-[0_5px_15px_rgba(15,23,42,0.18)]
+                  transition-all
+                  duration-200
+                  group-hover:bg-[#172033]
+                "
+              >
+                <span
+                  className="
+                    text-[17px]
+                    font-black
+                    leading-none
+                    tracking-[-0.08em]
+                    text-white
+                  "
+                >
+                  RV
+                </span>
+              </div>
+
+              {/* BRAND TEXT */}
+
+              <div className="hidden sm:block">
+                <div
+                  className="
+                    text-[13px]
+                    font-extrabold
+                    leading-none
+                    tracking-[-0.03em]
+                    text-[#111827]
+                  "
+                >
+                  RV Corporate Needs
+                </div>
+
+                <div
+                  className="
+                    mt-1
+                    text-[7px]
+                    font-bold
+                    uppercase
+                    tracking-[0.20em]
+                    text-[#475569]
+                  "
+                >
+                  Corporate & Industrial Procurement
+                </div>
+              </div>
             </button>
 
-            {/* PRODUCTS */}
+            {/* =================================================
+                DESKTOP NAVIGATION
+            ================================================= */}
 
-            <div className="relative">
+            <nav
+              className="
+                absolute
+                left-1/2
+                hidden
+                -translate-x-1/2
+                items-center
+                gap-1
+                lg:flex
+              "
+            >
+              {/* HOME */}
+
               <button
                 type="button"
-                onClick={toggleProducts}
-                aria-expanded={productsOpen}
+                onClick={handleHome}
                 className="
                   flex
                   h-10
                   items-center
                   justify-center
-                  gap-1.5
                   rounded-xl
                   px-4
-                  text-[12px]
+                  text-[13px]
                   font-bold
-                  text-white
+                  text-[#111827]
                   transition-all
-                  hover:bg-white/[0.06]
+                  duration-200
+                  hover:bg-white/40
                 "
               >
-                Products
-
-                <ChevronDown
-                  size={14}
-                  strokeWidth={2.2}
-                  className={`
-                    transition-transform
-                    duration-200
-                    ${productsOpen ? "rotate-180" : ""}
-                  `}
-                />
+                Home
               </button>
 
-              {/* DESKTOP DROPDOWN */}
+              {/* PRODUCTS */}
 
-              {productsOpen && (
-                <div
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={toggleProducts}
+                  aria-expanded={productsOpen}
                   className="
-                    absolute
-                    left-1/2
-                    top-[52px]
-                    w-[650px]
-                    -translate-x-1/2
-                    overflow-hidden
-                    rounded-[24px]
-                    border
-                    border-white/10
-                    bg-[#0d1525]
-                    p-3
-                    shadow-[0_30px_100px_rgba(0,0,0,0.55)]
+                    flex
+                    h-10
+                    items-center
+                    justify-center
+                    gap-1.5
+                    rounded-xl
+                    px-4
+                    text-[13px]
+                    font-bold
+                    text-[#111827]
+                    transition-all
+                    duration-200
+                    hover:bg-white/40
                   "
                 >
-                  <div className="grid grid-cols-2 gap-3">
+                  Products
+
+                  <ChevronDown
+                    size={15}
+                    strokeWidth={2.4}
+                    className={`
+                      transition-transform
+                      duration-200
+                      ${productsOpen ? "rotate-180" : ""}
+                    `}
+                  />
+                </button>
+
+                {/* DESKTOP DROPDOWN */}
+
+                {productsOpen && (
+                  <div
+                    className="
+                      absolute
+                      left-1/2
+                      top-[54px]
+                      w-[620px]
+                      -translate-x-1/2
+                      overflow-hidden
+                      rounded-[22px]
+                      border
+                      border-[#aeb4bd]
+                      bg-[#d5d8dd]
+                      p-3
+                      shadow-[0_25px_70px_rgba(15,23,42,0.25)]
+                    "
+                  >
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* CORPORATE */}
+
+                      <div
+                        className="
+                          rounded-[18px]
+                          border
+                          border-[#b8bec6]
+                          bg-[#e0e2e6]
+                          p-2
+                        "
+                      >
+                        <Link
+                          href={`${BASE_PATH}/solutions/corporate`}
+                          onClick={closeMenus}
+                          className="
+                            group
+                            flex
+                            items-center
+                            justify-between
+                            rounded-xl
+                            px-3
+                            py-3
+                            transition-all
+                            hover:bg-white/60
+                          "
+                        >
+                          <div>
+                            <p
+                              className="
+                                text-[9px]
+                                font-extrabold
+                                uppercase
+                                tracking-[0.18em]
+                                text-[#b47716]
+                              "
+                            >
+                              Corporate
+                            </p>
+
+                            <p
+                              className="
+                                mt-1
+                                text-[12px]
+                                font-extrabold
+                                text-[#111827]
+                              "
+                            >
+                              Workplace Solutions
+                            </p>
+                          </div>
+
+                          <ArrowUpRight
+                            size={17}
+                            className="
+                              text-[#64748b]
+                              transition-all
+                              group-hover:-translate-y-0.5
+                              group-hover:translate-x-0.5
+                              group-hover:text-[#b47716]
+                            "
+                          />
+                        </Link>
+
+                        <div className="mt-1 space-y-1">
+                          {corporateProducts.map((product) => (
+                            <Link
+                              key={product.name}
+                              href={product.href}
+                              onClick={closeMenus}
+                              className="
+                                group
+                                flex
+                                items-center
+                                justify-between
+                                rounded-lg
+                                px-3
+                                py-2.5
+                                text-[12px]
+                                font-bold
+                                text-[#334155]
+                                transition-all
+                                hover:bg-white/60
+                                hover:text-[#111827]
+                              "
+                            >
+                              <span>{product.name}</span>
+
+                              <ArrowUpRight
+                                size={13}
+                                className="
+                                  opacity-0
+                                  transition-all
+                                  group-hover:translate-x-0.5
+                                  group-hover:-translate-y-0.5
+                                  group-hover:opacity-100
+                                "
+                              />
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* INDUSTRIAL */}
+
+                      <div
+                        className="
+                          rounded-[18px]
+                          border
+                          border-[#b8bec6]
+                          bg-[#e0e2e6]
+                          p-2
+                        "
+                      >
+                        <Link
+                          href={`${BASE_PATH}/solutions/industrial`}
+                          onClick={closeMenus}
+                          className="
+                            group
+                            flex
+                            items-center
+                            justify-between
+                            rounded-xl
+                            px-3
+                            py-3
+                            transition-all
+                            hover:bg-white/60
+                          "
+                        >
+                          <div>
+                            <p
+                              className="
+                                text-[9px]
+                                font-extrabold
+                                uppercase
+                                tracking-[0.18em]
+                                text-[#b47716]
+                              "
+                            >
+                              Industrial
+                            </p>
+
+                            <p
+                              className="
+                                mt-1
+                                text-[12px]
+                                font-extrabold
+                                text-[#111827]
+                              "
+                            >
+                              Industrial Solutions
+                            </p>
+                          </div>
+
+                          <ArrowUpRight
+                            size={17}
+                            className="
+                              text-[#64748b]
+                              transition-all
+                              group-hover:-translate-y-0.5
+                              group-hover:translate-x-0.5
+                              group-hover:text-[#b47716]
+                            "
+                          />
+                        </Link>
+
+                        <div className="mt-1 space-y-1">
+                          {industrialProducts.map((product) => (
+                            <Link
+                              key={product.name}
+                              href={product.href}
+                              onClick={closeMenus}
+                              className="
+                                group
+                                flex
+                                items-center
+                                justify-between
+                                rounded-lg
+                                px-3
+                                py-2.5
+                                text-[12px]
+                                font-bold
+                                text-[#334155]
+                                transition-all
+                                hover:bg-white/60
+                                hover:text-[#111827]
+                              "
+                            >
+                              <span>{product.name}</span>
+
+                              <ArrowUpRight
+                                size={13}
+                                className="
+                                  opacity-0
+                                  transition-all
+                                  group-hover:translate-x-0.5
+                                  group-hover:-translate-y-0.5
+                                  group-hover:opacity-100
+                                "
+                              />
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* BRANDS */}
+
+              <button
+                type="button"
+                onClick={() => scrollToSection("brands")}
+                className="
+                  flex
+                  h-10
+                  items-center
+                  justify-center
+                  rounded-xl
+                  px-4
+                  text-[13px]
+                  font-bold
+                  text-[#111827]
+                  transition-all
+                  hover:bg-white/40
+                "
+              >
+                Brands
+              </button>
+
+              {/* ABOUT */}
+
+              <button
+                type="button"
+                onClick={() => scrollToSection("about")}
+                className="
+                  flex
+                  h-10
+                  items-center
+                  justify-center
+                  rounded-xl
+                  px-4
+                  text-[13px]
+                  font-bold
+                  text-[#111827]
+                  transition-all
+                  hover:bg-white/40
+                "
+              >
+                About
+              </button>
+
+              {/* CONTACT */}
+
+              <button
+                type="button"
+                onClick={() => scrollToSection("contact")}
+                className="
+                  flex
+                  h-10
+                  items-center
+                  justify-center
+                  rounded-xl
+                  px-4
+                  text-[13px]
+                  font-bold
+                  text-[#111827]
+                  transition-all
+                  hover:bg-white/40
+                "
+              >
+                Contact
+              </button>
+            </nav>
+
+            {/* =================================================
+                DESKTOP QUOTE BUTTON
+            ================================================= */}
+
+            <div className="ml-auto hidden lg:block">
+              <a
+                href={quoteLink}
+                className="
+                  group
+                  flex
+                  h-10
+                  items-center
+                  gap-2
+                  rounded-xl
+                  bg-[#d89b32]
+                  px-4
+                  text-[11px]
+                  font-extrabold
+                  text-[#111827]
+                  shadow-[0_8px_25px_rgba(216,155,50,0.22)]
+                  transition-all
+                  duration-200
+                  hover:-translate-y-0.5
+                  hover:bg-[#e5ab49]
+                "
+              >
+                <Mail
+                  size={14}
+                  strokeWidth={2.5}
+                />
+
+                Request a Quote
+
+                <ArrowUpRight
+                  size={14}
+                  strokeWidth={2.5}
+                  className="
+                    transition-transform
+                    group-hover:-translate-y-0.5
+                    group-hover:translate-x-0.5
+                  "
+                />
+              </a>
+            </div>
+
+            {/* =================================================
+                MOBILE MENU BUTTON
+            ================================================= */}
+
+            <button
+              type="button"
+              onClick={() => {
+                setMobileOpen((current) => !current);
+                setProductsOpen(false);
+              }}
+              aria-label="Toggle navigation"
+              aria-expanded={mobileOpen}
+              className="
+                ml-auto
+                flex
+                h-11
+                w-11
+                items-center
+                justify-center
+                rounded-[14px]
+                border
+                border-[#aeb4bd]
+                bg-[#111827]
+                text-white
+                shadow-[0_5px_15px_rgba(15,23,42,0.15)]
+                transition-all
+                hover:bg-[#172033]
+                lg:hidden
+              "
+            >
+              {mobileOpen ? (
+                <X size={20} />
+              ) : (
+                <Menu size={20} />
+              )}
+            </button>
+          </div>
+
+          {/* ===================================================
+              MOBILE MENU
+          ==================================================== */}
+
+          {mobileOpen && (
+            <div
+              className="
+                border-t
+                border-[#aeb4bd]
+                px-3
+                pb-3
+                lg:hidden
+              "
+            >
+              <div
+                className="
+                  mt-3
+                  max-h-[calc(100vh-105px)]
+                  overflow-y-auto
+                  overscroll-contain
+                  rounded-[18px]
+                  border
+                  border-[#b3b8c0]
+                  bg-[#d5d8dd]
+                  p-2
+                "
+              >
+                {/* HOME */}
+
+                <button
+                  type="button"
+                  onClick={handleHome}
+                  className="
+                    flex
+                    min-h-[48px]
+                    w-full
+                    items-center
+                    rounded-xl
+                    px-4
+                    text-left
+                    text-[15px]
+                    font-bold
+                    text-[#111827]
+                    transition-all
+                    hover:bg-white/60
+                  "
+                >
+                  Home
+                </button>
+
+                {/* PRODUCTS */}
+
+                <button
+                  type="button"
+                  onClick={toggleProducts}
+                  aria-expanded={productsOpen}
+                  className="
+                    flex
+                    min-h-[48px]
+                    w-full
+                    items-center
+                    justify-between
+                    rounded-xl
+                    px-4
+                    text-left
+                    text-[15px]
+                    font-bold
+                    text-[#111827]
+                    transition-all
+                    hover:bg-white/60
+                  "
+                >
+                  <span>Products</span>
+
+                  <ChevronDown
+                    size={18}
+                    className={`
+                      transition-transform
+                      duration-200
+                      ${productsOpen ? "rotate-180" : ""}
+                    `}
+                  />
+                </button>
+
+                {/* MOBILE PRODUCT LIST */}
+
+                {productsOpen && (
+                  <div
+                    className="
+                      mt-1
+                      space-y-2
+                      rounded-[16px]
+                      border
+                      border-[#b7bcc4]
+                      bg-[#cbd0d6]
+                      p-2
+                    "
+                  >
                     {/* CORPORATE */}
 
                     <div
                       className="
-                        rounded-[20px]
+                        overflow-hidden
+                        rounded-[14px]
                         border
-                        border-white/[0.07]
-                        bg-white/[0.025]
-                        p-3
+                        border-[#b5bac2]
+                        bg-[#e0e2e6]
                       "
                     >
-                      <a
-                        href={CORPORATE_URL}
+                      <Link
+                        href={`${BASE_PATH}/solutions/corporate`}
                         onClick={closeMenus}
                         className="
-                          group
-                          mb-2
                           flex
+                          min-h-[66px]
                           items-center
                           justify-between
-                          rounded-xl
-                          border
-                          border-transparent
-                          px-3
+                          px-4
                           py-3
                           transition-all
-                          hover:border-[#d89b32]/20
-                          hover:bg-[#d89b32]/[0.07]
+                          hover:bg-white/60
                         "
                       >
                         <div>
-                          <p
+                          <div
                             className="
-                              text-[9px]
-                              font-bold
+                              text-[10px]
+                              font-extrabold
                               uppercase
                               tracking-[0.18em]
-                              text-[#d89b32]
+                              text-[#b47716]
                             "
                           >
                             Corporate
-                          </p>
+                          </div>
 
-                          <p
+                          <div
                             className="
                               mt-1
-                              text-[11px]
-                              font-bold
-                              text-white
+                              text-[14px]
+                              font-extrabold
+                              text-[#111827]
                             "
                           >
                             Workplace Solutions
-                          </p>
+                          </div>
                         </div>
 
                         <ArrowUpRight
-                          size={16}
-                          className="
-                            text-white/30
-                            transition-all
-                            group-hover:text-[#d89b32]
-                          "
+                          size={17}
+                          className="text-[#64748b]"
                         />
-                      </a>
+                      </Link>
 
-                      <div className="space-y-1">
+                      <div
+                        className="
+                          border-t
+                          border-[#c0c4ca]
+                          px-2
+                          py-2
+                        "
+                      >
                         {corporateProducts.map((product) => (
-                          <a
+                          <Link
                             key={product.name}
                             href={product.href}
                             onClick={closeMenus}
                             className="
-                              group
                               flex
+                              min-h-[44px]
                               items-center
-                              justify-between
-                              rounded-xl
+                              rounded-lg
                               px-3
-                              py-2.5
-                              text-[12px]
-                              font-bold
-                              text-white/75
+                              text-[14px]
+                              font-semibold
+                              text-[#334155]
                               transition-all
-                              hover:bg-white/[0.07]
-                              hover:text-white
+                              hover:bg-white/60
+                              hover:text-[#111827]
                             "
                           >
-                            <span>{product.name}</span>
-
-                            <ArrowUpRight
-                              size={13}
-                              className="
-                                text-white/20
-                                transition-all
-                                group-hover:text-[#d89b32]
-                              "
-                            />
-                          </a>
+                            {product.name}
+                          </Link>
                         ))}
                       </div>
                     </div>
@@ -533,586 +1013,207 @@ export default function Navbar() {
 
                     <div
                       className="
-                        rounded-[20px]
+                        overflow-hidden
+                        rounded-[14px]
                         border
-                        border-white/[0.07]
-                        bg-white/[0.025]
-                        p-3
+                        border-[#b5bac2]
+                        bg-[#e0e2e6]
                       "
                     >
-                      <a
-                        href={INDUSTRIAL_URL}
+                      <Link
+                        href={`${BASE_PATH}/solutions/industrial`}
                         onClick={closeMenus}
                         className="
-                          group
-                          mb-2
                           flex
+                          min-h-[66px]
                           items-center
                           justify-between
-                          rounded-xl
-                          border
-                          border-transparent
-                          px-3
+                          px-4
                           py-3
                           transition-all
-                          hover:border-[#d89b32]/20
-                          hover:bg-[#d89b32]/[0.07]
+                          hover:bg-white/60
                         "
                       >
                         <div>
-                          <p
+                          <div
                             className="
-                              text-[9px]
-                              font-bold
+                              text-[10px]
+                              font-extrabold
                               uppercase
                               tracking-[0.18em]
-                              text-[#d89b32]
+                              text-[#b47716]
                             "
                           >
                             Industrial
-                          </p>
+                          </div>
 
-                          <p
+                          <div
                             className="
                               mt-1
-                              text-[11px]
-                              font-bold
-                              text-white
+                              text-[14px]
+                              font-extrabold
+                              text-[#111827]
                             "
                           >
                             Industrial Solutions
-                          </p>
+                          </div>
                         </div>
 
                         <ArrowUpRight
-                          size={16}
-                          className="
-                            text-white/30
-                            transition-all
-                            group-hover:text-[#d89b32]
-                          "
+                          size={17}
+                          className="text-[#64748b]"
                         />
-                      </a>
+                      </Link>
 
-                      <div className="space-y-1">
+                      <div
+                        className="
+                          border-t
+                          border-[#c0c4ca]
+                          px-2
+                          py-2
+                        "
+                      >
                         {industrialProducts.map((product) => (
-                          <a
+                          <Link
                             key={product.name}
                             href={product.href}
                             onClick={closeMenus}
                             className="
-                              group
                               flex
+                              min-h-[44px]
                               items-center
-                              justify-between
-                              rounded-xl
+                              rounded-lg
                               px-3
-                              py-2.5
-                              text-[12px]
-                              font-bold
-                              text-white/75
+                              text-[14px]
+                              font-semibold
+                              text-[#334155]
                               transition-all
-                              hover:bg-white/[0.07]
-                              hover:text-white
+                              hover:bg-white/60
+                              hover:text-[#111827]
                             "
                           >
-                            <span>{product.name}</span>
-
-                            <ArrowUpRight
-                              size={13}
-                              className="
-                                text-white/20
-                                transition-all
-                                group-hover:text-[#d89b32]
-                              "
-                            />
-                          </a>
+                            {product.name}
+                          </Link>
                         ))}
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
 
-            {/* BRANDS */}
+                {/* BRANDS */}
 
-            <button
-              type="button"
-              onClick={() => scrollToSection("brands")}
-              className="
-                flex
-                h-10
-                items-center
-                justify-center
-                rounded-xl
-                px-4
-                text-[12px]
-                font-bold
-                text-white
-                transition-all
-                hover:bg-white/[0.06]
-              "
-            >
-              Brands
-            </button>
-
-            {/* ABOUT */}
-
-            <button
-              type="button"
-              onClick={() => scrollToSection("about")}
-              className="
-                flex
-                h-10
-                items-center
-                justify-center
-                rounded-xl
-                px-4
-                text-[12px]
-                font-bold
-                text-white
-                transition-all
-                hover:bg-white/[0.06]
-              "
-            >
-              About
-            </button>
-
-            {/* CONTACT */}
-
-            <button
-              type="button"
-              onClick={() => scrollToSection("contact")}
-              className="
-                flex
-                h-10
-                items-center
-                justify-center
-                rounded-xl
-                px-4
-                text-[12px]
-                font-bold
-                text-white
-                transition-all
-                hover:bg-white/[0.06]
-              "
-            >
-              Contact
-            </button>
-          </nav>
-
-          {/* =================================================
-              DESKTOP QUOTE
-          ================================================= */}
-
-          <div className="ml-auto hidden lg:block">
-            <a
-              href={quoteLink}
-              className="
-                group
-                flex
-                h-10
-                items-center
-                gap-2
-                rounded-xl
-                bg-[#d89b32]
-                px-4
-                text-[11px]
-                font-extrabold
-                text-[#0b1220]
-                transition-all
-                duration-300
-                hover:-translate-y-0.5
-                hover:bg-[#e4aa46]
-              "
-            >
-              <Mail size={14} strokeWidth={2.5} />
-
-              Request a Quote
-
-              <ArrowUpRight
-                size={14}
-                strokeWidth={2.5}
-                className="
-                  transition-transform
-                  group-hover:translate-x-0.5
-                  group-hover:-translate-y-0.5
-                "
-              />
-            </a>
-          </div>
-
-          {/* =================================================
-              MOBILE MENU BUTTON
-          ================================================= */}
-
-          <button
-            type="button"
-            onClick={() => {
-              setMobileOpen((current) => !current);
-              setProductsOpen(false);
-            }}
-            aria-label="Toggle navigation"
-            aria-expanded={mobileOpen}
-            className="
-              ml-auto
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-xl
-              border
-              border-white/10
-              bg-white/[0.04]
-              text-white
-              lg:hidden
-            "
-          >
-            {mobileOpen ? (
-              <X size={19} />
-            ) : (
-              <Menu size={19} />
-            )}
-          </button>
-        </div>
-
-        {/* =====================================================
-            MOBILE MENU
-        ====================================================== */}
-
-        {mobileOpen && (
-          <div
-            className="
-              mx-auto
-              mt-2
-              max-w-7xl
-              max-h-[calc(100vh-110px)]
-              overflow-y-auto
-              rounded-[24px]
-              border
-              border-white/10
-              bg-[#0d1525]
-              p-3
-              shadow-[0_25px_80px_rgba(0,0,0,0.45)]
-              lg:hidden
-            "
-          >
-            {/* HOME */}
-
-            <button
-              type="button"
-              onClick={handleHome}
-              className="
-                flex
-                h-12
-                w-full
-                items-center
-                rounded-xl
-                px-4
-                text-left
-                text-[15px]
-                font-bold
-                text-white
-                hover:bg-white/[0.06]
-              "
-            >
-              Home
-            </button>
-
-            {/* PRODUCTS */}
-
-            <button
-              type="button"
-              onClick={toggleProducts}
-              className="
-                flex
-                h-12
-                w-full
-                items-center
-                justify-between
-                rounded-xl
-                px-4
-                text-left
-                text-[15px]
-                font-bold
-                text-white
-                hover:bg-white/[0.06]
-              "
-            >
-              <span>Products</span>
-
-              <ChevronDown
-                size={17}
-                className={`
-                  transition-transform
-                  ${productsOpen ? "rotate-180" : ""}
-                `}
-              />
-            </button>
-
-            {/* MOBILE PRODUCT LIST */}
-
-            {productsOpen && (
-              <div
-                className="
-                  mb-2
-                  space-y-3
-                  rounded-2xl
-                  border
-                  border-white/[0.07]
-                  bg-linear-to-r 
-                  from-[#d9dde3] 
-                  via-[#eef0f3] 
-                  to-[#c8cdd4]
-                  p-2
-                "
-              >
-                {/* CORPORATE */}
-
-                <div
+                <button
+                  type="button"
+                  onClick={() => scrollToSection("brands")}
                   className="
+                    mt-1
+                    flex
+                    min-h-[48px]
+                    w-full
+                    items-center
                     rounded-xl
-                    border
-                    border-white/[0.08]
-                    bg-[#111a2b]
-                    p-2
+                    px-4
+                    text-left
+                    text-[15px]
+                    font-bold
+                    text-[#111827]
+                    transition-all
+                    hover:bg-white/60
                   "
                 >
-                  <a
-                    href={CORPORATE_URL}
-                    onClick={closeMenus}
-                    className="
-                      flex
-                      items-center
-                      justify-between
-                      rounded-lg
-                      px-3
-                      py-3
-                      hover:bg-[#d89b32]/[0.07]
-                    "
-                  >
-                    <div>
-                      <p
-                        className="
-                          text-[10px]
-                          font-bold
-                          uppercase
-                          tracking-[0.18em]
-                          text-[#d89b32]
-                        "
-                      >
-                        Corporate
-                      </p>
+                  Brands
+                </button>
 
-                      <p className="mt-1 text-sm font-bold text-white">
-                        Workplace Solutions
-                      </p>
-                    </div>
+                {/* ABOUT */}
 
-                    <ArrowUpRight
-                      size={17}
-                      className="text-white/40"
-                    />
-                  </a>
-
-                  <div className="mt-1 space-y-1">
-                    {corporateProducts.map((product) => (
-                      <a
-                        key={product.name}
-                        href={product.href}
-                        onClick={closeMenus}
-                        className="
-                          block
-                          rounded-lg
-                          px-3
-                          py-3
-                          text-sm
-                          font-semibold
-                          text-white/75
-                          hover:bg-white/[0.06]
-                          hover:text-white
-                        "
-                      >
-                        {product.name}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
-                {/* INDUSTRIAL */}
-
-                <div
+                <button
+                  type="button"
+                  onClick={() => scrollToSection("about")}
                   className="
+                    flex
+                    min-h-[48px]
+                    w-full
+                    items-center
                     rounded-xl
-                    border
-                    border-white/[0.08]
-                    bg-[#111a2b]
-                    p-2
+                    px-4
+                    text-left
+                    text-[15px]
+                    font-bold
+                    text-[#111827]
+                    transition-all
+                    hover:bg-white/60
                   "
                 >
-                  <a
-                    href={INDUSTRIAL_URL}
-                    onClick={closeMenus}
-                    className="
-                      flex
-                      items-center
-                      justify-between
-                      rounded-lg
-                      px-3
-                      py-3
-                      hover:bg-[#d89b32]/[0.07]
-                    "
-                  >
-                    <div>
-                      <p
-                        className="
-                          text-[10px]
-                          font-bold
-                          uppercase
-                          tracking-[0.18em]
-                          text-[#d89b32]
-                        "
-                      >
-                        Industrial
-                      </p>
+                  About
+                </button>
 
-                      <p className="mt-1 text-sm font-bold text-white">
-                        Industrial Solutions
-                      </p>
-                    </div>
+                {/* CONTACT */}
 
-                    <ArrowUpRight
-                      size={17}
-                      className="text-white/40"
-                    />
-                  </a>
+                <button
+                  type="button"
+                  onClick={() => scrollToSection("contact")}
+                  className="
+                    flex
+                    min-h-[48px]
+                    w-full
+                    items-center
+                    rounded-xl
+                    px-4
+                    text-left
+                    text-[15px]
+                    font-bold
+                    text-[#111827]
+                    transition-all
+                    hover:bg-white/60
+                  "
+                >
+                  Contact
+                </button>
 
-                  <div className="mt-1 space-y-1">
-                    {industrialProducts.map((product) => (
-                      <a
-                        key={product.name}
-                        href={product.href}
-                        onClick={closeMenus}
-                        className="
-                          block
-                          rounded-lg
-                          px-3
-                          py-3
-                          text-sm
-                          font-semibold
-                          text-white/75
-                          hover:bg-white/[0.06]
-                          hover:text-white
-                        "
-                      >
-                        {product.name}
-                      </a>
-                    ))}
-                  </div>
-                </div>
+                {/* MOBILE QUOTE */}
+
+                <a
+                  href={quoteLink}
+                  onClick={closeMenus}
+                  className="
+                    mt-2
+                    flex
+                    min-h-[52px]
+                    w-full
+                    items-center
+                    justify-center
+                    gap-2
+                    rounded-xl
+                    bg-[#d89b32]
+                    text-[13px]
+                    font-extrabold
+                    text-[#111827]
+                    shadow-[0_8px_20px_rgba(216,155,50,0.18)]
+                  "
+                >
+                  <Mail
+                    size={16}
+                    strokeWidth={2.5}
+                  />
+
+                  Request a Quote
+
+                  <ArrowUpRight
+                    size={16}
+                    strokeWidth={2.5}
+                  />
+                </a>
               </div>
-            )}
-
-            {/* BRANDS */}
-
-            <button
-              type="button"
-              onClick={() => scrollToSection("brands")}
-              className="
-                flex
-                h-12
-                w-full
-                items-center
-                rounded-xl
-                px-4
-                text-left
-                text-[15px]
-                font-bold
-                text-white
-                hover:bg-white/[0.06]
-              "
-            >
-              Brands
-            </button>
-
-            {/* ABOUT */}
-
-            <button
-              type="button"
-              onClick={() => scrollToSection("about")}
-              className="
-                flex
-                h-12
-                w-full
-                items-center
-                rounded-xl
-                px-4
-                text-left
-                text-[15px]
-                font-bold
-                text-white
-                hover:bg-white/[0.06]
-              "
-            >
-              About
-            </button>
-
-            {/* CONTACT */}
-
-            <button
-              type="button"
-              onClick={() => scrollToSection("contact")}
-              className="
-                flex
-                h-12
-                w-full
-                items-center
-                rounded-xl
-                px-4
-                text-left
-                text-[15px]
-                font-bold
-                text-white
-                hover:bg-white/[0.06]
-              "
-            >
-              Contact
-            </button>
-
-            {/* MOBILE QUOTE */}
-
-            <a
-              href={quoteLink}
-              onClick={closeMenus}
-              className="
-                mt-2
-                flex
-                h-12
-                items-center
-                justify-center
-                gap-2
-                rounded-xl
-                bg-[#d89b32]
-                text-sm
-                font-extrabold
-                text-[#0b1220]
-              "
-            >
-              <MessageCircle size={16} />
-
-              Request a Quote
-
-              <ArrowUpRight size={15} />
-            </a>
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </header>
 
-      {/* NAVBAR SPACE */}
+      {/* =====================================================
+          CONTENT OFFSET
+      ====================================================== */}
 
-      <div className="h-[100px]" />
+      <div className="h-3" />
     </>
   );
 }
