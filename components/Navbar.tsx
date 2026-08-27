@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ChevronDown,
@@ -11,71 +11,65 @@ import {
 } from "lucide-react";
 
 /* =========================================================
-   GITHUB PAGES BASE PATH
-========================================================= */
-
-const BASE_PATH = "/rv-corporate-needs";
-
-/* =========================================================
    PRODUCTS
 ========================================================= */
 
 const corporateProducts = [
   {
     name: "IT Products",
-    href: `${BASE_PATH}/solutions/corporate/it-products`,
+    href: "/solutions/corporate/it-products",
   },
   {
     name: "Pantry",
-    href: `${BASE_PATH}/solutions/corporate/pantry`,
+    href: "/solutions/corporate/pantry",
   },
   {
     name: "Stationery",
-    href: `${BASE_PATH}/solutions/corporate/stationery`,
+    href: "/solutions/corporate/stationery",
   },
   {
     name: "Hygiene",
-    href: `${BASE_PATH}/solutions/corporate/hygiene`,
+    href: "/solutions/corporate/hygiene",
   },
   {
     name: "Housekeeping",
-    href: `${BASE_PATH}/solutions/corporate/housekeeping`,
+    href: "/solutions/corporate/housekeeping",
   },
   {
     name: "Corporate Gifting",
-    href: `${BASE_PATH}/solutions/corporate/corporate-gifting`,
+    href: "/solutions/corporate/corporate-gifting",
   },
 ];
 
 const industrialProducts = [
   {
     name: "Bearings",
-    href: `${BASE_PATH}/solutions/industrial/bearings`,
+    href: "/solutions/industrial/bearings",
   },
   {
     name: "Cleanroom",
-    href: `${BASE_PATH}/solutions/industrial/cleanroom-solutions`,
+    href: "/solutions/industrial/cleanroom-solutions",
   },
   {
     name: "ESD",
-    href: `${BASE_PATH}/solutions/industrial/esd-solutions`,
+    href: "/solutions/industrial/esd-solutions",
   },
   {
     name: "Fabrication",
-    href: `${BASE_PATH}/solutions/industrial/fabrication-unit`,
+    href: "/solutions/industrial/fabrication-unit",
   },
   {
     name: "Garments",
-    href: `${BASE_PATH}/solutions/industrial/garments-accessories`,
+    href: "/solutions/industrial/garments-accessories",
   },
   {
     name: "Lubricants",
-    href: `${BASE_PATH}/solutions/industrial/lubricants`,
+    href: "/solutions/industrial/lubricants",
   },
 ];
 
 /* =========================================================
-   QUOTE EMAIL
+   EMAIL
 ========================================================= */
 
 const EMAIL = "sales@rvcorporateneeds.com";
@@ -106,10 +100,37 @@ export default function Navbar() {
   const [productsOpen, setProductsOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const navbarRef = useRef<HTMLElement | null>(null);
+
   const quoteLink = getQuoteLink();
 
   /* =======================================================
-     ESCAPE KEY
+     CLOSE WHEN CLICKING OUTSIDE
+  ======================================================= */
+
+  useEffect(() => {
+    function handleOutsideClick(event: MouseEvent) {
+      if (
+        navbarRef.current &&
+        !navbarRef.current.contains(event.target as Node)
+      ) {
+        setProductsOpen(false);
+        setMobileOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleOutsideClick
+      );
+    };
+  }, []);
+
+  /* =======================================================
+     ESCAPE
   ======================================================= */
 
   useEffect(() => {
@@ -123,12 +144,15 @@ export default function Navbar() {
     document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener(
+        "keydown",
+        handleEscape
+      );
     };
   }, []);
 
   /* =======================================================
-     MOBILE SCROLL LOCK
+     MOBILE BODY LOCK
   ======================================================= */
 
   useEffect(() => {
@@ -156,54 +180,64 @@ export default function Navbar() {
      HOME
   ======================================================= */
 
-  function handleHome() {
+  function goHome() {
     closeMenus();
 
-    const path = window.location.pathname;
+    const pathname = window.location.pathname;
 
-    if (path === BASE_PATH || path === `${BASE_PATH}/`) {
+    /*
+      Because Next.js basePath is configured,
+      "/" becomes:
+
+      /rv-corporate-needs/
+    */
+
+    if (
+      pathname === "/" ||
+      pathname === "/rv-corporate-needs" ||
+      pathname === "/rv-corporate-needs/"
+    ) {
       window.scrollTo({
         top: 0,
         behavior: "smooth",
       });
-    } else {
-      window.location.href = `${BASE_PATH}/`;
-    }
-  }
 
-  /* =======================================================
-     SECTION LINKS
-  ======================================================= */
-
-  function goToSection(id: string) {
-    closeMenus();
-
-    const path = window.location.pathname;
-
-    const isHome =
-      path === BASE_PATH || path === `${BASE_PATH}/`;
-
-    if (!isHome) {
-      window.location.href = `${BASE_PATH}/#${id}`;
       return;
     }
 
-    const element = document.getElementById(id);
-
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
+    window.location.href = "/rv-corporate-needs/";
   }
 
   /* =======================================================
-     PRODUCTS TOGGLE
+     SECTION NAVIGATION
   ======================================================= */
 
-  function toggleProducts() {
-    setProductsOpen((current) => !current);
+  function goToSection(sectionId: string) {
+    closeMenus();
+
+    const pathname = window.location.pathname;
+
+    const isHome =
+      pathname === "/" ||
+      pathname === "/rv-corporate-needs" ||
+      pathname === "/rv-corporate-needs/";
+
+    if (!isHome) {
+      window.location.href = `/rv-corporate-needs/#${sectionId}`;
+      return;
+    }
+
+    const element = document.getElementById(sectionId);
+
+    if (!element) {
+      window.location.href = `/rv-corporate-needs/#${sectionId}`;
+      return;
+    }
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   }
 
   /* =======================================================
@@ -211,118 +245,175 @@ export default function Navbar() {
   ======================================================= */
 
   return (
-    <>
-      <header className="sticky top-0 z-[100] w-full px-3 pt-3 sm:px-5 lg:px-6">
+    <header
+      ref={navbarRef}
+      className="
+        sticky
+        top-0
+        z-[100]
+        w-full
+        px-3
+        pt-3
+        sm:px-5
+        lg:px-6
+      "
+    >
+      <div
+        className="
+          relative
+          mx-auto
+          w-full
+          max-w-7xl
+          rounded-[22px]
+          border
+          border-[#aeb4bd]
+          bg-[#c9cdd3]
+          shadow-[0_18px_50px_rgba(15,23,42,0.18)]
+        "
+      >
+        {/* =================================================
+            MAIN BAR
+        ================================================= */}
+
         <div
           className="
-            relative
-            mx-auto
-            w-full
-            max-w-7xl
-            rounded-[22px]
-            border
-            border-[#aeb4bd]
-            bg-[#c9cdd3]
-            shadow-[0_18px_50px_rgba(15,23,42,0.18)]
+            flex
+            min-h-[68px]
+            items-center
+            px-3
+            sm:px-5
+            lg:px-6
           "
         >
           {/* =================================================
-              TOP NAVBAR
+              LOGO
           ================================================= */}
 
-          <div className="flex min-h-[68px] items-center px-3 sm:px-5 lg:px-6">
-            {/* =================================================
-                LOGO
-            ================================================= */}
-
-            <button
-              type="button"
-              onClick={handleHome}
-              aria-label="Go to home"
+          <button
+            type="button"
+            onClick={goHome}
+            aria-label="Go to home"
+            className="
+              group
+              flex
+              shrink-0
+              items-center
+              gap-3
+              rounded-xl
+              outline-none
+            "
+          >
+            <div
               className="
                 flex
+                h-11
+                w-11
                 shrink-0
                 items-center
-                gap-3
-                rounded-xl
-                text-left
-                outline-none
+                justify-center
+                rounded-[14px]
+                border
+                border-[#aab0b9]
+                bg-[#111827]
+                shadow-[0_5px_15px_rgba(15,23,42,0.18)]
+                transition
+                duration-200
+                group-hover:bg-[#172033]
               "
             >
-              {/* RV LOGO */}
+              <span
+                className="
+                  text-[17px]
+                  font-black
+                  leading-none
+                  tracking-[-0.08em]
+                  text-white
+                "
+              >
+                RV
+              </span>
+            </div>
+
+            <div className="hidden sm:block">
+              <div
+                className="
+                  text-[13px]
+                  font-extrabold
+                  leading-none
+                  tracking-[-0.03em]
+                  text-[#111827]
+                "
+              >
+                RV Corporate Needs
+              </div>
 
               <div
                 className="
-                  flex
-                  h-11
-                  w-11
-                  shrink-0
-                  items-center
-                  justify-center
-                  rounded-[14px]
-                  border
-                  border-[#aab0b9]
-                  bg-[#111827]
-                  shadow-[0_5px_15px_rgba(15,23,42,0.18)]
+                  mt-1
+                  text-[7px]
+                  font-bold
+                  uppercase
+                  tracking-[0.20em]
+                  text-[#475569]
                 "
               >
-                <span
-                  className="
-                    text-[17px]
-                    font-black
-                    leading-none
-                    tracking-[-0.08em]
-                    text-white
-                  "
-                >
-                  RV
-                </span>
+                Corporate & Industrial Procurement
               </div>
+            </div>
+          </button>
 
-              {/* BRAND */}
+          {/* =================================================
+              DESKTOP NAV
+          ================================================= */}
 
-              <div className="hidden sm:block">
-                <div
-                  className="
-                    text-[13px]
-                    font-extrabold
-                    leading-none
-                    tracking-[-0.03em]
-                    text-[#111827]
-                  "
-                >
-                  RV Corporate Needs
-                </div>
+          <nav
+            className="
+              absolute
+              left-1/2
+              hidden
+              -translate-x-1/2
+              items-center
+              gap-1
+              lg:flex
+            "
+          >
+            {/* HOME */}
 
-                <div
-                  className="
-                    mt-1
-                    text-[7px]
-                    font-bold
-                    uppercase
-                    tracking-[0.20em]
-                    text-[#475569]
-                  "
-                >
-                  Corporate & Industrial Procurement
-                </div>
-              </div>
+            <button
+              type="button"
+              onClick={goHome}
+              className="
+                flex
+                h-10
+                items-center
+                justify-center
+                rounded-xl
+                px-4
+                text-[13px]
+                font-bold
+                text-[#111827]
+                transition
+                hover:bg-white/40
+              "
+            >
+              Home
             </button>
 
-            {/* =================================================
-                DESKTOP NAV
-            ================================================= */}
+            {/* PRODUCTS */}
 
-            <nav className="ml-auto hidden items-center gap-1 lg:flex">
-              {/* HOME */}
-
+            <div className="relative">
               <button
                 type="button"
-                onClick={handleHome}
+                onClick={() =>
+                  setProductsOpen((value) => !value)
+                }
+                aria-expanded={productsOpen}
                 className="
                   flex
                   h-10
                   items-center
+                  justify-center
+                  gap-1.5
                   rounded-xl
                   px-4
                   text-[13px]
@@ -332,86 +423,334 @@ export default function Navbar() {
                   hover:bg-white/40
                 "
               >
+                Products
+
+                <ChevronDown
+                  size={15}
+                  strokeWidth={2.4}
+                  className={`
+                    transition-transform
+                    duration-200
+                    ${
+                      productsOpen
+                        ? "rotate-180"
+                        : ""
+                    }
+                  `}
+                />
+              </button>
+
+              {/* DESKTOP DROPDOWN */}
+
+              {productsOpen && (
+                <div
+                  className="
+                    absolute
+                    left-1/2
+                    top-[54px]
+                    w-[620px]
+                    -translate-x-1/2
+                    overflow-hidden
+                    rounded-[22px]
+                    border
+                    border-[#aeb4bd]
+                    bg-[#d5d8dd]
+                    p-3
+                    shadow-[0_25px_70px_rgba(15,23,42,0.25)]
+                  "
+                >
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* CORPORATE */}
+
+                    <ProductGroup
+                      label="Corporate"
+                      title="Workplace Solutions"
+                      href="/solutions/corporate"
+                      products={corporateProducts}
+                      onClose={closeMenus}
+                    />
+
+                    {/* INDUSTRIAL */}
+
+                    <ProductGroup
+                      label="Industrial"
+                      title="Industrial Solutions"
+                      href="/solutions/industrial"
+                      products={industrialProducts}
+                      onClose={closeMenus}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* BRANDS */}
+
+            <button
+              type="button"
+              onClick={() => goToSection("brands")}
+              className="
+                flex
+                h-10
+                items-center
+                justify-center
+                rounded-xl
+                px-4
+                text-[13px]
+                font-bold
+                text-[#111827]
+                transition
+                hover:bg-white/40
+              "
+            >
+              Brands
+            </button>
+
+            {/* ABOUT */}
+
+            <button
+              type="button"
+              onClick={() => goToSection("about")}
+              className="
+                flex
+                h-10
+                items-center
+                justify-center
+                rounded-xl
+                px-4
+                text-[13px]
+                font-bold
+                text-[#111827]
+                transition
+                hover:bg-white/40
+              "
+            >
+              About
+            </button>
+
+            {/* CONTACT */}
+
+            <button
+              type="button"
+              onClick={() => goToSection("contact")}
+              className="
+                flex
+                h-10
+                items-center
+                justify-center
+                rounded-xl
+                px-4
+                text-[13px]
+                font-bold
+                text-[#111827]
+                transition
+                hover:bg-white/40
+              "
+            >
+              Contact
+            </button>
+          </nav>
+
+          {/* =================================================
+              QUOTE
+          ================================================= */}
+
+          <div className="ml-auto hidden lg:block">
+            <a
+              href={quoteLink}
+              className="
+                group
+                flex
+                h-10
+                items-center
+                gap-2
+                rounded-xl
+                bg-[#d89b32]
+                px-4
+                text-[11px]
+                font-extrabold
+                text-[#111827]
+                shadow-[0_8px_25px_rgba(216,155,50,0.22)]
+                transition
+                duration-200
+                hover:-translate-y-0.5
+                hover:bg-[#e5ab49]
+              "
+            >
+              <Mail
+                size={14}
+                strokeWidth={2.5}
+              />
+
+              Request a Quote
+
+              <ArrowUpRight
+                size={14}
+                strokeWidth={2.5}
+                className="
+                  transition-transform
+                  group-hover:-translate-y-0.5
+                  group-hover:translate-x-0.5
+                "
+              />
+            </a>
+          </div>
+
+          {/* =================================================
+              MOBILE BUTTON
+          ================================================= */}
+
+          <button
+            type="button"
+            onClick={() => {
+              setMobileOpen((value) => !value);
+              setProductsOpen(false);
+            }}
+            aria-label="Toggle navigation"
+            aria-expanded={mobileOpen}
+            className="
+              ml-auto
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              rounded-[14px]
+              border
+              border-[#aeb4bd]
+              bg-[#111827]
+              text-white
+              shadow-[0_5px_15px_rgba(15,23,42,0.15)]
+              transition
+              hover:bg-[#172033]
+              lg:hidden
+            "
+          >
+            {mobileOpen ? (
+              <X size={20} />
+            ) : (
+              <Menu size={20} />
+            )}
+          </button>
+        </div>
+
+        {/* =================================================
+            MOBILE MENU
+        ================================================= */}
+
+        {mobileOpen && (
+          <div
+            className="
+              border-t
+              border-[#aeb4bd]
+              px-3
+              pb-3
+              lg:hidden
+            "
+          >
+            <div
+              className="
+                mt-3
+                max-h-[calc(100vh-105px)]
+                overflow-y-auto
+                rounded-[18px]
+                border
+                border-[#b3b8c0]
+                bg-[#d5d8dd]
+                p-2
+              "
+            >
+              {/* HOME */}
+
+              <button
+                type="button"
+                onClick={goHome}
+                className="
+                  flex
+                  min-h-[48px]
+                  w-full
+                  items-center
+                  rounded-xl
+                  px-4
+                  text-left
+                  text-[15px]
+                  font-bold
+                  text-[#111827]
+                  hover:bg-white/60
+                "
+              >
                 Home
               </button>
 
               {/* PRODUCTS */}
 
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={toggleProducts}
-                  aria-expanded={productsOpen}
+              <button
+                type="button"
+                onClick={() =>
+                  setProductsOpen((value) => !value)
+                }
+                aria-expanded={productsOpen}
+                className="
+                  flex
+                  min-h-[48px]
+                  w-full
+                  items-center
+                  justify-between
+                  rounded-xl
+                  px-4
+                  text-left
+                  text-[15px]
+                  font-bold
+                  text-[#111827]
+                  hover:bg-white/60
+                "
+              >
+                <span>Products</span>
+
+                <ChevronDown
+                  size={18}
+                  className={`
+                    transition-transform
+                    ${
+                      productsOpen
+                        ? "rotate-180"
+                        : ""
+                    }
+                  `}
+                />
+              </button>
+
+              {/* MOBILE PRODUCTS */}
+
+              {productsOpen && (
+                <div
                   className="
-                    flex
-                    h-10
-                    items-center
-                    gap-1.5
-                    rounded-xl
-                    px-4
-                    text-[13px]
-                    font-bold
-                    text-[#111827]
-                    transition
-                    hover:bg-white/40
+                    mt-1
+                    space-y-2
+                    rounded-[16px]
+                    border
+                    border-[#b7bcc4]
+                    bg-[#cbd0d6]
+                    p-2
                   "
                 >
-                  Products
-
-                  <ChevronDown
-                    size={15}
-                    strokeWidth={2.4}
-                    className={`
-                      transition-transform
-                      duration-200
-                      ${productsOpen ? "rotate-180" : ""}
-                    `}
+                  <MobileProductGroup
+                    label="Corporate"
+                    title="Workplace Solutions"
+                    href="/solutions/corporate"
+                    products={corporateProducts}
+                    onClose={closeMenus}
                   />
-                </button>
 
-                {/* =================================================
-                    DESKTOP PRODUCTS DROPDOWN
-                ================================================= */}
-
-                {productsOpen && (
-                  <div
-                    className="
-                      absolute
-                      right-0
-                      top-[48px]
-                      w-[620px]
-                      rounded-[22px]
-                      border
-                      border-[#aeb4bd]
-                      bg-[#d5d8dd]
-                      p-3
-                      shadow-[0_25px_70px_rgba(15,23,42,0.25)]
-                    "
-                  >
-                    <div className="grid grid-cols-2 gap-3">
-                      {/* CORPORATE */}
-
-                      <ProductGroup
-                        title="Corporate"
-                        subtitle="Workplace Solutions"
-                        categoryHref={`${BASE_PATH}/solutions/corporate`}
-                        products={corporateProducts}
-                        onNavigate={closeMenus}
-                      />
-
-                      {/* INDUSTRIAL */}
-
-                      <ProductGroup
-                        title="Industrial"
-                        subtitle="Industrial Solutions"
-                        categoryHref={`${BASE_PATH}/solutions/industrial`}
-                        products={industrialProducts}
-                        onNavigate={closeMenus}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
+                  <MobileProductGroup
+                    label="Industrial"
+                    title="Industrial Solutions"
+                    href="/solutions/industrial"
+                    products={industrialProducts}
+                    onClose={closeMenus}
+                  />
+                </div>
+              )}
 
               {/* BRANDS */}
 
@@ -420,15 +759,16 @@ export default function Navbar() {
                 onClick={() => goToSection("brands")}
                 className="
                   flex
-                  h-10
+                  min-h-[48px]
+                  w-full
                   items-center
                   rounded-xl
                   px-4
-                  text-[13px]
+                  text-left
+                  text-[15px]
                   font-bold
                   text-[#111827]
-                  transition
-                  hover:bg-white/40
+                  hover:bg-white/60
                 "
               >
                 Brands
@@ -441,15 +781,16 @@ export default function Navbar() {
                 onClick={() => goToSection("about")}
                 className="
                   flex
-                  h-10
+                  min-h-[48px]
+                  w-full
                   items-center
                   rounded-xl
                   px-4
-                  text-[13px]
+                  text-left
+                  text-[15px]
                   font-bold
                   text-[#111827]
-                  transition
-                  hover:bg-white/40
+                  hover:bg-white/60
                 "
               >
                 About
@@ -462,15 +803,16 @@ export default function Navbar() {
                 onClick={() => goToSection("contact")}
                 className="
                   flex
-                  h-10
+                  min-h-[48px]
+                  w-full
                   items-center
                   rounded-xl
                   px-4
-                  text-[13px]
+                  text-left
+                  text-[15px]
                   font-bold
                   text-[#111827]
-                  transition
-                  hover:bg-white/40
+                  hover:bg-white/60
                 "
               >
                 Contact
@@ -480,241 +822,36 @@ export default function Navbar() {
 
               <a
                 href={quoteLink}
+                onClick={closeMenus}
                 className="
-                  ml-2
+                  mt-2
                   flex
-                  h-10
+                  min-h-[52px]
+                  w-full
                   items-center
+                  justify-center
                   gap-2
                   rounded-xl
                   bg-[#d89b32]
-                  px-4
-                  text-[11px]
+                  text-[13px]
                   font-extrabold
                   text-[#111827]
-                  shadow-[0_8px_25px_rgba(216,155,50,0.22)]
-                  transition
-                  hover:-translate-y-0.5
-                  hover:bg-[#e5ab49]
+                  shadow-[0_8px_20px_rgba(216,155,50,0.18)]
                 "
               >
-                <Mail size={14} strokeWidth={2.5} />
+                <Mail size={16} />
 
                 Request a Quote
 
-                <ArrowUpRight
-                  size={14}
-                  strokeWidth={2.5}
-                />
+                <ArrowUpRight size={16} />
               </a>
-            </nav>
-
-            {/* =================================================
-                MOBILE BUTTON
-            ================================================= */}
-
-            <button
-              type="button"
-              onClick={() => {
-                setMobileOpen((current) => !current);
-                setProductsOpen(false);
-              }}
-              aria-label={
-                mobileOpen
-                  ? "Close navigation"
-                  : "Open navigation"
-              }
-              aria-expanded={mobileOpen}
-              className="
-                ml-auto
-                flex
-                h-11
-                w-11
-                shrink-0
-                items-center
-                justify-center
-                rounded-[14px]
-                border
-                border-[#aeb4bd]
-                bg-[#111827]
-                text-white
-                shadow-[0_5px_15px_rgba(15,23,42,0.15)]
-                lg:hidden
-              "
-            >
-              {mobileOpen ? (
-                <X size={20} />
-              ) : (
-                <Menu size={20} />
-              )}
-            </button>
-          </div>
-
-          {/* =================================================
-              MOBILE NAVIGATION
-          ================================================= */}
-
-          {mobileOpen && (
-            <div
-              className="
-                border-t
-                border-[#aeb4bd]
-                px-3
-                pb-3
-                lg:hidden
-              "
-            >
-              <div
-                className="
-                  mt-3
-                  max-h-[calc(100vh-100px)]
-                  overflow-y-auto
-                  rounded-[18px]
-                  border
-                  border-[#b3b8c0]
-                  bg-[#d5d8dd]
-                  p-2
-                "
-              >
-                {/* HOME */}
-
-                <MobileNavButton
-                  label="Home"
-                  onClick={handleHome}
-                />
-
-                {/* PRODUCTS */}
-
-                <button
-                  type="button"
-                  onClick={toggleProducts}
-                  aria-expanded={productsOpen}
-                  className="
-                    flex
-                    min-h-[50px]
-                    w-full
-                    items-center
-                    justify-between
-                    rounded-xl
-                    px-4
-                    text-left
-                    text-[15px]
-                    font-bold
-                    text-[#111827]
-                    transition
-                    hover:bg-white/60
-                  "
-                >
-                  <span>Products</span>
-
-                  <ChevronDown
-                    size={18}
-                    className={`
-                      transition-transform
-                      duration-200
-                      ${productsOpen ? "rotate-180" : ""}
-                    `}
-                  />
-                </button>
-
-                {/* MOBILE PRODUCTS */}
-
-                {productsOpen && (
-                  <div
-                    className="
-                      mt-1
-                      space-y-2
-                      rounded-[16px]
-                      border
-                      border-[#b7bcc4]
-                      bg-[#cbd0d6]
-                      p-2
-                    "
-                  >
-                    <MobileProductGroup
-                      title="Corporate"
-                      subtitle="Workplace Solutions"
-                      categoryHref={`${BASE_PATH}/solutions/corporate`}
-                      products={corporateProducts}
-                      onNavigate={closeMenus}
-                    />
-
-                    <MobileProductGroup
-                      title="Industrial"
-                      subtitle="Industrial Solutions"
-                      categoryHref={`${BASE_PATH}/solutions/industrial`}
-                      products={industrialProducts}
-                      onNavigate={closeMenus}
-                    />
-                  </div>
-                )}
-
-                {/* BRANDS */}
-
-                <MobileNavButton
-                  label="Brands"
-                  onClick={() => goToSection("brands")}
-                />
-
-                {/* ABOUT */}
-
-                <MobileNavButton
-                  label="About"
-                  onClick={() => goToSection("about")}
-                />
-
-                {/* CONTACT */}
-
-                <MobileNavButton
-                  label="Contact"
-                  onClick={() => goToSection("contact")}
-                />
-
-                {/* QUOTE */}
-
-                <a
-                  href={quoteLink}
-                  onClick={closeMenus}
-                  className="
-                    mt-2
-                    flex
-                    min-h-[52px]
-                    w-full
-                    items-center
-                    justify-center
-                    gap-2
-                    rounded-xl
-                    bg-[#d89b32]
-                    text-[13px]
-                    font-extrabold
-                    text-[#111827]
-                    shadow-[0_8px_20px_rgba(216,155,50,0.18)]
-                  "
-                >
-                  <Mail
-                    size={16}
-                    strokeWidth={2.5}
-                  />
-
-                  Request a Quote
-
-                  <ArrowUpRight
-                    size={16}
-                    strokeWidth={2.5}
-                  />
-                </a>
-              </div>
             </div>
-          )}
-        </div>
-      </header>
-
-      {/* =====================================================
-          SMALL PAGE OFFSET
-      ====================================================== */}
+          </div>
+        )}
+      </div>
 
       <div className="h-3" />
-    </>
+    </header>
   );
 }
 
@@ -723,20 +860,20 @@ export default function Navbar() {
 ========================================================= */
 
 function ProductGroup({
+  label,
   title,
-  subtitle,
-  categoryHref,
+  href,
   products,
-  onNavigate,
+  onClose,
 }: {
+  label: string;
   title: string;
-  subtitle: string;
-  categoryHref: string;
+  href: string;
   products: {
     name: string;
     href: string;
   }[];
-  onNavigate: () => void;
+  onClose: () => void;
 }) {
   return (
     <div
@@ -749,8 +886,8 @@ function ProductGroup({
       "
     >
       <Link
-        href={categoryHref}
-        onClick={onNavigate}
+        href={href}
+        onClick={onClose}
         className="
           group
           flex
@@ -759,7 +896,6 @@ function ProductGroup({
           rounded-xl
           px-3
           py-3
-          transition
           hover:bg-white/60
         "
       >
@@ -773,7 +909,7 @@ function ProductGroup({
               text-[#b47716]
             "
           >
-            {title}
+            {label}
           </p>
 
           <p
@@ -784,7 +920,7 @@ function ProductGroup({
               text-[#111827]
             "
           >
-            {subtitle}
+            {title}
           </p>
         </div>
 
@@ -792,9 +928,6 @@ function ProductGroup({
           size={17}
           className="
             text-[#64748b]
-            transition
-            group-hover:-translate-y-0.5
-            group-hover:translate-x-0.5
             group-hover:text-[#b47716]
           "
         />
@@ -805,7 +938,7 @@ function ProductGroup({
           <Link
             key={product.name}
             href={product.href}
-            onClick={onNavigate}
+            onClick={onClose}
             className="
               group
               flex
@@ -817,7 +950,6 @@ function ProductGroup({
               text-[12px]
               font-bold
               text-[#334155]
-              transition
               hover:bg-white/60
               hover:text-[#111827]
             "
@@ -828,9 +960,8 @@ function ProductGroup({
               size={13}
               className="
                 opacity-0
-                transition
-                group-hover:-translate-y-0.5
                 group-hover:translate-x-0.5
+                group-hover:-translate-y-0.5
                 group-hover:opacity-100
               "
             />
@@ -842,59 +973,24 @@ function ProductGroup({
 }
 
 /* =========================================================
-   MOBILE NAV BUTTON
-========================================================= */
-
-function MobileNavButton({
-  label,
-  onClick,
-}: {
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="
-        flex
-        min-h-[50px]
-        w-full
-        items-center
-        rounded-xl
-        px-4
-        text-left
-        text-[15px]
-        font-bold
-        text-[#111827]
-        transition
-        hover:bg-white/60
-      "
-    >
-      {label}
-    </button>
-  );
-}
-
-/* =========================================================
    MOBILE PRODUCT GROUP
 ========================================================= */
 
 function MobileProductGroup({
+  label,
   title,
-  subtitle,
-  categoryHref,
+  href,
   products,
-  onNavigate,
+  onClose,
 }: {
+  label: string;
   title: string;
-  subtitle: string;
-  categoryHref: string;
+  href: string;
   products: {
     name: string;
     href: string;
   }[];
-  onNavigate: () => void;
+  onClose: () => void;
 }) {
   return (
     <div
@@ -906,11 +1002,9 @@ function MobileProductGroup({
         bg-[#e0e2e6]
       "
     >
-      {/* CATEGORY */}
-
       <Link
-        href={categoryHref}
-        onClick={onNavigate}
+        href={href}
+        onClick={onClose}
         className="
           flex
           min-h-[66px]
@@ -918,7 +1012,6 @@ function MobileProductGroup({
           justify-between
           px-4
           py-3
-          transition
           hover:bg-white/60
         "
       >
@@ -932,7 +1025,7 @@ function MobileProductGroup({
               text-[#b47716]
             "
           >
-            {title}
+            {label}
           </div>
 
           <div
@@ -943,7 +1036,7 @@ function MobileProductGroup({
               text-[#111827]
             "
           >
-            {subtitle}
+            {title}
           </div>
         </div>
 
@@ -952,8 +1045,6 @@ function MobileProductGroup({
           className="text-[#64748b]"
         />
       </Link>
-
-      {/* PRODUCTS */}
 
       <div
         className="
@@ -967,7 +1058,7 @@ function MobileProductGroup({
           <Link
             key={product.name}
             href={product.href}
-            onClick={onNavigate}
+            onClick={onClose}
             className="
               flex
               min-h-[44px]
@@ -977,7 +1068,6 @@ function MobileProductGroup({
               text-[14px]
               font-semibold
               text-[#334155]
-              transition
               hover:bg-white/60
               hover:text-[#111827]
             "
