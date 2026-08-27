@@ -1,15 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ChevronDown,
-  Menu,
   Mail,
-  X,
+  Menu,
   MessageCircle,
+  X,
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 /* =========================================================
    GITHUB PAGES BASE PATH
@@ -75,8 +74,12 @@ const industrialProducts = [
   },
 ];
 
+const CORPORATE_URL = `${BASE_PATH}/solutions/corporate`;
+const INDUSTRIAL_URL = `${BASE_PATH}/solutions/industrial`;
+const HOME_URL = `${BASE_PATH}/`;
+
 /* =========================================================
-   QUOTE LINK
+   EMAIL
 ========================================================= */
 
 const EMAIL = "sales@rvcorporateneeds.com";
@@ -151,7 +154,7 @@ export default function Navbar() {
   }, []);
 
   /* =======================================================
-     MENU HELPERS
+     CLOSE MENUS
   ======================================================= */
 
   function closeMenus() {
@@ -164,6 +167,24 @@ export default function Navbar() {
   }
 
   /* =======================================================
+     HOME
+  ======================================================= */
+
+  function handleHome() {
+    closeMenus();
+
+    if (window.location.pathname === `${BASE_PATH}/`) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+      return;
+    }
+
+    window.location.href = HOME_URL;
+  }
+
+  /* =======================================================
      SECTION NAVIGATION
   ======================================================= */
 
@@ -172,82 +193,19 @@ export default function Navbar() {
 
     const currentPath = window.location.pathname;
 
-    /*
-      If we are on another page, return to the homepage
-      using the GitHub Pages base path.
-    */
-
-    if (
-      currentPath !== BASE_PATH &&
-      currentPath !== `${BASE_PATH}/`
-    ) {
-      window.location.href = `${BASE_PATH}/#${sectionId}`;
+    if (currentPath !== `${BASE_PATH}/`) {
+      window.location.href = `${HOME_URL}#${sectionId}`;
       return;
     }
-
-    /*
-      We are already on the homepage.
-      Scroll directly to the section.
-    */
 
     const element = document.getElementById(sectionId);
 
-    if (!element) {
-      return;
-    }
+    if (!element) return;
 
     element.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
-
-    /*
-      Update URL hash without causing another page load.
-    */
-
-    window.history.replaceState(
-      null,
-      "",
-      `${BASE_PATH}/#${sectionId}`
-    );
-  }
-
-  /* =======================================================
-     HOME
-  ======================================================= */
-
-  function handleHome() {
-    closeMenus();
-
-    const currentPath = window.location.pathname;
-
-    /*
-      If we're on another page, go back to the actual
-      GitHub Pages homepage.
-    */
-
-    if (
-      currentPath !== BASE_PATH &&
-      currentPath !== `${BASE_PATH}/`
-    ) {
-      window.location.href = `${BASE_PATH}/`;
-      return;
-    }
-
-    /*
-      Already on homepage.
-    */
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-
-    window.history.replaceState(
-      null,
-      "",
-      `${BASE_PATH}/`
-    );
   }
 
   /* =======================================================
@@ -269,13 +227,17 @@ export default function Navbar() {
           left-0
           right-0
           top-0
-          z-50
+          z-[100]
           px-4
           pt-4
           sm:px-6
           lg:px-8
         "
       >
+        {/* =================================================
+            DESKTOP / MOBILE NAVBAR
+        ================================================= */}
+
         <div
           className="
             relative
@@ -294,96 +256,87 @@ export default function Navbar() {
             sm:px-5
           "
         >
-
           {/* =================================================
-              LEFT — LOGO
+              LOGO
           ================================================= */}
 
-          <div className="flex shrink-0 items-center">
-            <button
-              type="button"
-              onClick={handleHome}
+          <button
+            type="button"
+            onClick={handleHome}
+            aria-label="Go to home"
+            className="
+              group
+              flex
+              shrink-0
+              items-center
+              gap-3
+              rounded-xl
+              px-1
+              py-1
+              text-left
+            "
+          >
+            <div
               className="
-                group
                 flex
+                h-10
+                w-10
+                shrink-0
                 items-center
-                gap-3
+                justify-center
                 rounded-xl
-                px-1
-                py-1
-                text-left
-                outline-none
+                border
+                border-white/10
+                bg-white/[0.05]
+                transition-all
+                duration-300
+                group-hover:border-[#d89b32]/40
+                group-hover:bg-[#d89b32]/10
               "
-              aria-label="Go to home"
             >
+              <span
+                className="
+                  text-[17px]
+                  font-black
+                  leading-none
+                  tracking-[-0.08em]
+                  text-white
+                "
+              >
+                RV
+              </span>
+            </div>
 
-              {/* RV MARK */}
+            <div className="hidden sm:block">
+              <div
+                className="
+                  text-[13px]
+                  font-extrabold
+                  leading-none
+                  tracking-[-0.03em]
+                  text-white
+                "
+              >
+                RV Corporate Needs
+              </div>
 
               <div
                 className="
-                  flex
-                  h-10
-                  w-10
-                  shrink-0
-                  items-center
-                  justify-center
-                  rounded-xl
-                  border
-                  border-white/10
-                  bg-white/[0.05]
-                  transition-all
-                  duration-300
-                  group-hover:border-[#d89b32]/30
-                  group-hover:bg-[#d89b32]/10
+                  mt-1
+                  text-[7px]
+                  font-bold
+                  uppercase
+                  tracking-[0.20em]
+                  text-white/40
                 "
               >
-                <span
-                  className="
-                    text-[17px]
-                    font-black
-                    leading-none
-                    tracking-[-0.08em]
-                    text-white
-                  "
-                >
-                  RV
-                </span>
+                Corporate & Industrial Procurement
               </div>
-
-              {/* BRAND NAME */}
-
-              <div className="hidden sm:block">
-                <div
-                  className="
-                    text-[13px]
-                    font-extrabold
-                    leading-none
-                    tracking-[-0.03em]
-                    text-white
-                  "
-                >
-                  RV Corporate Needs
-                </div>
-
-                <div
-                  className="
-                    mt-1
-                    text-[7px]
-                    font-bold
-                    uppercase
-                    tracking-[0.20em]
-                    text-white/40
-                  "
-                >
-                  Corporate & Industrial Procurement
-                </div>
-              </div>
-
-            </button>
-          </div>
+            </div>
+          </button>
 
           {/* =================================================
-              CENTER — DESKTOP NAVIGATION
+              DESKTOP NAVIGATION
           ================================================= */}
 
           <nav
@@ -397,7 +350,6 @@ export default function Navbar() {
               lg:flex
             "
           >
-
             {/* HOME */}
 
             <button
@@ -414,19 +366,15 @@ export default function Navbar() {
                 font-bold
                 text-white
                 transition-all
-                duration-200
                 hover:bg-white/[0.06]
               "
             >
               Home
             </button>
 
-            {/* =================================================
-                PRODUCTS
-            ================================================= */}
+            {/* PRODUCTS */}
 
             <div className="relative">
-
               <button
                 type="button"
                 onClick={toggleProducts}
@@ -443,7 +391,6 @@ export default function Navbar() {
                   font-bold
                   text-white
                   transition-all
-                  duration-200
                   hover:bg-white/[0.06]
                 "
               >
@@ -460,9 +407,7 @@ export default function Navbar() {
                 />
               </button>
 
-              {/* =================================================
-                  PRODUCTS DROPDOWN
-              ================================================= */}
+              {/* DESKTOP DROPDOWN */}
 
               {productsOpen && (
                 <div
@@ -479,15 +424,10 @@ export default function Navbar() {
                     bg-[#0d1525]
                     p-3
                     shadow-[0_30px_100px_rgba(0,0,0,0.55)]
-                    backdrop-blur-2xl
                   "
                 >
-
                   <div className="grid grid-cols-2 gap-3">
-
-                    {/* =================================================
-                        CORPORATE
-                    ================================================= */}
+                    {/* CORPORATE */}
 
                     <div
                       className="
@@ -498,9 +438,8 @@ export default function Navbar() {
                         p-3
                       "
                     >
-
-                      <Link
-                        href={`${BASE_PATH}/solutions/corporate`}
+                      <a
+                        href={CORPORATE_URL}
                         onClick={closeMenus}
                         className="
                           group
@@ -514,12 +453,10 @@ export default function Navbar() {
                           px-3
                           py-3
                           transition-all
-                          duration-200
                           hover:border-[#d89b32]/20
                           hover:bg-[#d89b32]/[0.07]
                         "
                       >
-
                         <div>
                           <p
                             className="
@@ -550,19 +487,14 @@ export default function Navbar() {
                           className="
                             text-white/30
                             transition-all
-                            duration-200
-                            group-hover:translate-x-0.5
-                            group-hover:-translate-y-0.5
                             group-hover:text-[#d89b32]
                           "
                         />
-
-                      </Link>
+                      </a>
 
                       <div className="space-y-1">
-
                         {corporateProducts.map((product) => (
-                          <Link
+                          <a
                             key={product.name}
                             href={product.href}
                             onClick={closeMenus}
@@ -576,45 +508,28 @@ export default function Navbar() {
                               py-2.5
                               text-[12px]
                               font-bold
-                              text-white
+                              text-white/75
                               transition-all
-                              duration-200
                               hover:bg-white/[0.07]
+                              hover:text-white
                             "
                           >
-
-                            <span
-                              className="
-                                font-bold
-                                text-white/75
-                                transition-colors
-                                group-hover:text-white
-                              "
-                            >
-                              {product.name}
-                            </span>
+                            <span>{product.name}</span>
 
                             <ArrowUpRight
                               size={13}
                               className="
                                 text-white/20
                                 transition-all
-                                duration-200
-                                group-hover:translate-x-0.5
-                                group-hover:-translate-y-0.5
                                 group-hover:text-[#d89b32]
                               "
                             />
-
-                          </Link>
+                          </a>
                         ))}
-
                       </div>
                     </div>
 
-                    {/* =================================================
-                        INDUSTRIAL
-                    ================================================= */}
+                    {/* INDUSTRIAL */}
 
                     <div
                       className="
@@ -625,9 +540,8 @@ export default function Navbar() {
                         p-3
                       "
                     >
-
-                      <Link
-                        href={`${BASE_PATH}/solutions/industrial`}
+                      <a
+                        href={INDUSTRIAL_URL}
                         onClick={closeMenus}
                         className="
                           group
@@ -641,12 +555,10 @@ export default function Navbar() {
                           px-3
                           py-3
                           transition-all
-                          duration-200
                           hover:border-[#d89b32]/20
                           hover:bg-[#d89b32]/[0.07]
                         "
                       >
-
                         <div>
                           <p
                             className="
@@ -677,19 +589,14 @@ export default function Navbar() {
                           className="
                             text-white/30
                             transition-all
-                            duration-200
-                            group-hover:translate-x-0.5
-                            group-hover:-translate-y-0.5
                             group-hover:text-[#d89b32]
                           "
                         />
-
-                      </Link>
+                      </a>
 
                       <div className="space-y-1">
-
                         {industrialProducts.map((product) => (
-                          <Link
+                          <a
                             key={product.name}
                             href={product.href}
                             onClick={closeMenus}
@@ -703,495 +610,30 @@ export default function Navbar() {
                               py-2.5
                               text-[12px]
                               font-bold
-                              text-white
+                              text-white/75
                               transition-all
-                              duration-200
                               hover:bg-white/[0.07]
+                              hover:text-white
                             "
                           >
-
-                            <span
-                              className="
-                                font-bold
-                                text-white/75
-                                transition-colors
-                                group-hover:text-white
-                              "
-                            >
-                              {product.name}
-                            </span>
+                            <span>{product.name}</span>
 
                             <ArrowUpRight
                               size={13}
                               className="
                                 text-white/20
                                 transition-all
-                                duration-200
-                                group-hover:translate-x-0.5
-                                group-hover:-translate-y-0.5
                                 group-hover:text-[#d89b32]
                               "
                             />
-
-                          </Link>
+                          </a>
                         ))}
-
                       </div>
                     </div>
-
                   </div>
                 </div>
               )}
-
             </div>
-
-            {/* =================================================
-                BRANDS
-            ================================================= */}
-
-            <button
-              type="button"
-              onClick={() => scrollToSection("brands")}
-              className="
-                flex
-                h-10
-                items-center
-                justify-center
-                rounded-xl
-                px-4
-                text-[12px]
-                font-bold
-                text-white
-                transition-all
-                duration-200
-                hover:bg-white/[0.06]
-              "
-            >
-              Brands
-            </button>
-
-            {/* =================================================
-                ABOUT
-            ================================================= */}
-
-            <button
-              type="button"
-              onClick={() => scrollToSection("about")}
-              className="
-                flex
-                h-10
-                items-center
-                justify-center
-                rounded-xl
-                px-4
-                text-[12px]
-                font-bold
-                text-white
-                transition-all
-                duration-200
-                hover:bg-white/[0.06]
-              "
-            >
-              About
-            </button>
-
-            {/* =================================================
-                CONTACT
-            ================================================= */}
-
-            <button
-              type="button"
-              onClick={() => scrollToSection("contact")}
-              className="
-                flex
-                h-10
-                items-center
-                justify-center
-                rounded-xl
-                px-4
-                text-[12px]
-                font-bold
-                text-white
-                transition-all
-                duration-200
-                hover:bg-white/[0.06]
-              "
-            >
-              Contact
-            </button>
-
-          </nav>
-
-          {/* =================================================
-              RIGHT — REQUEST QUOTE
-          ================================================= */}
-
-          <div className="ml-auto hidden shrink-0 lg:block">
-
-            <a
-              href={quoteLink}
-              className="
-                group
-                flex
-                h-10
-                items-center
-                gap-2
-                rounded-xl
-                bg-[#d89b32]
-                px-4
-                text-[11px]
-                font-extrabold
-                text-[#0b1220]
-                shadow-[0_8px_30px_rgba(216,155,50,0.12)]
-                transition-all
-                duration-300
-                hover:-translate-y-0.5
-                hover:bg-[#e4aa46]
-                hover:shadow-[0_12px_40px_rgba(216,155,50,0.22)]
-              "
-            >
-
-              <Mail
-                size={14}
-                strokeWidth={2.5}
-              />
-
-              Request a Quote
-
-              <ArrowUpRight
-                size={14}
-                strokeWidth={2.5}
-                className="
-                  transition-transform
-                  duration-300
-                  group-hover:translate-x-0.5
-                  group-hover:-translate-y-0.5
-                "
-              />
-
-            </a>
-
-          </div>
-
-          {/* =================================================
-              MOBILE MENU BUTTON
-          ================================================= */}
-
-          <button
-            type="button"
-            onClick={() => setMobileOpen((current) => !current)}
-            aria-label="Toggle navigation"
-            aria-expanded={mobileOpen}
-            className="
-              ml-auto
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-xl
-              border
-              border-white/10
-              bg-white/[0.04]
-              text-white
-              transition-all
-              duration-200
-              hover:border-white/20
-              hover:bg-white/[0.08]
-              lg:hidden
-            "
-          >
-
-            {mobileOpen ? (
-              <X size={19} />
-            ) : (
-              <Menu size={19} />
-            )}
-
-          </button>
-
-        </div>
-
-        {/* =====================================================
-            MOBILE NAVIGATION
-        ====================================================== */}
-
-        {mobileOpen && (
-          <div
-            className="
-              mx-auto
-              mt-2
-              max-w-7xl
-              overflow-hidden
-              rounded-[24px]
-              border
-              border-white/10
-              bg-[#0d1525]
-              p-3
-              shadow-[0_25px_80px_rgba(0,0,0,0.45)]
-              backdrop-blur-2xl
-              lg:hidden
-            "
-          >
-
-            {/* HOME */}
-
-            <button
-              type="button"
-              onClick={handleHome}
-              className="
-                flex
-                h-11
-                w-full
-                items-center
-                rounded-xl
-                px-4
-                text-left
-                text-[13px]
-                font-bold
-                text-white
-                transition-all
-                hover:bg-white/[0.06]
-              "
-            >
-              Home
-            </button>
-
-            {/* PRODUCTS */}
-
-            <button
-              type="button"
-              onClick={toggleProducts}
-              className="
-                flex
-                h-11
-                w-full
-                items-center
-                justify-between
-                rounded-xl
-                px-4
-                text-left
-                text-[13px]
-                font-bold
-                text-white
-                transition-all
-                hover:bg-white/[0.06]
-              "
-            >
-
-              <span>Products</span>
-
-              <ChevronDown
-                size={15}
-                className={`
-                  transition-transform
-                  duration-200
-                  ${productsOpen ? "rotate-180" : ""}
-                `}
-              />
-
-            </button>
-
-            {/* MOBILE PRODUCTS */}
-
-            {productsOpen && (
-              <div
-                className="
-                  mb-2
-                  grid
-                  gap-2
-                  rounded-2xl
-                  border
-                  border-white/[0.07]
-                  bg-black/10
-                  p-2
-                "
-              >
-
-                {/* CORPORATE */}
-
-                <div
-                  className="
-                    rounded-xl
-                    border
-                    border-white/[0.06]
-                    bg-white/[0.02]
-                    p-2
-                  "
-                >
-
-                  <Link
-                    href={`${BASE_PATH}/solutions/corporate`}
-                    onClick={closeMenus}
-                    className="
-                      group
-                      flex
-                      items-center
-                      justify-between
-                      rounded-lg
-                      px-3
-                      py-3
-                      hover:bg-[#d89b32]/[0.07]
-                    "
-                  >
-
-                    <div>
-
-                      <div
-                        className="
-                          text-[9px]
-                          font-bold
-                          uppercase
-                          tracking-[0.18em]
-                          text-[#d89b32]
-                        "
-                      >
-                        Corporate
-                      </div>
-
-                      <div
-                        className="
-                          mt-1
-                          text-[11px]
-                          font-bold
-                          text-white
-                        "
-                      >
-                        Workplace Solutions
-                      </div>
-
-                    </div>
-
-                    <ArrowUpRight
-                      size={15}
-                      className="
-                        text-white/30
-                        group-hover:text-[#d89b32]
-                      "
-                    />
-
-                  </Link>
-
-                  <div className="mt-1 space-y-1">
-
-                    {corporateProducts.map((product) => (
-                      <Link
-                        key={product.name}
-                        href={product.href}
-                        onClick={closeMenus}
-                        className="
-                          block
-                          rounded-lg
-                          px-3
-                          py-2.5
-                          text-[12px]
-                          font-bold
-                          text-white/75
-                          transition-all
-                          hover:bg-white/[0.06]
-                          hover:text-white
-                        "
-                      >
-                        {product.name}
-                      </Link>
-                    ))}
-
-                  </div>
-                </div>
-
-                {/* INDUSTRIAL */}
-
-                <div
-                  className="
-                    rounded-xl
-                    border
-                    border-white/[0.06]
-                    bg-white/[0.02]
-                    p-2
-                  "
-                >
-
-                  <Link
-                    href={`${BASE_PATH}/solutions/industrial`}
-                    onClick={closeMenus}
-                    className="
-                      group
-                      flex
-                      items-center
-                      justify-between
-                      rounded-lg
-                      px-3
-                      py-3
-                      hover:bg-[#d89b32]/[0.07]
-                    "
-                  >
-
-                    <div>
-
-                      <div
-                        className="
-                          text-[9px]
-                          font-bold
-                          uppercase
-                          tracking-[0.18em]
-                          text-[#d89b32]
-                        "
-                      >
-                        Industrial
-                      </div>
-
-                      <div
-                        className="
-                          mt-1
-                          text-[11px]
-                          font-bold
-                          text-white
-                        "
-                      >
-                        Industrial Solutions
-                      </div>
-
-                    </div>
-
-                    <ArrowUpRight
-                      size={15}
-                      className="
-                        text-white/30
-                        group-hover:text-[#d89b32]
-                      "
-                    />
-
-                  </Link>
-
-                  <div className="mt-1 space-y-1">
-
-                    {industrialProducts.map((product) => (
-                      <Link
-                        key={product.name}
-                        href={product.href}
-                        onClick={closeMenus}
-                        className="
-                          block
-                          rounded-lg
-                          px-3
-                          py-2.5
-                          text-[12px]
-                          font-bold
-                          text-white/75
-                          transition-all
-                          hover:bg-white/[0.06]
-                          hover:text-white
-                        "
-                      >
-                        {product.name}
-                      </Link>
-                    ))}
-
-                  </div>
-                </div>
-
-              </div>
-            )}
 
             {/* BRANDS */}
 
@@ -1200,13 +642,12 @@ export default function Navbar() {
               onClick={() => scrollToSection("brands")}
               className="
                 flex
-                h-11
-                w-full
+                h-10
                 items-center
+                justify-center
                 rounded-xl
                 px-4
-                text-left
-                text-[13px]
+                text-[12px]
                 font-bold
                 text-white
                 transition-all
@@ -1223,13 +664,12 @@ export default function Navbar() {
               onClick={() => scrollToSection("about")}
               className="
                 flex
-                h-11
-                w-full
+                h-10
                 items-center
+                justify-center
                 rounded-xl
                 px-4
-                text-left
-                text-[13px]
+                text-[12px]
                 font-bold
                 text-white
                 transition-all
@@ -1246,16 +686,392 @@ export default function Navbar() {
               onClick={() => scrollToSection("contact")}
               className="
                 flex
-                h-11
+                h-10
+                items-center
+                justify-center
+                rounded-xl
+                px-4
+                text-[12px]
+                font-bold
+                text-white
+                transition-all
+                hover:bg-white/[0.06]
+              "
+            >
+              Contact
+            </button>
+          </nav>
+
+          {/* =================================================
+              DESKTOP QUOTE
+          ================================================= */}
+
+          <div className="ml-auto hidden lg:block">
+            <a
+              href={quoteLink}
+              className="
+                group
+                flex
+                h-10
+                items-center
+                gap-2
+                rounded-xl
+                bg-[#d89b32]
+                px-4
+                text-[11px]
+                font-extrabold
+                text-[#0b1220]
+                transition-all
+                duration-300
+                hover:-translate-y-0.5
+                hover:bg-[#e4aa46]
+              "
+            >
+              <Mail size={14} strokeWidth={2.5} />
+
+              Request a Quote
+
+              <ArrowUpRight
+                size={14}
+                strokeWidth={2.5}
+                className="
+                  transition-transform
+                  group-hover:translate-x-0.5
+                  group-hover:-translate-y-0.5
+                "
+              />
+            </a>
+          </div>
+
+          {/* =================================================
+              MOBILE MENU BUTTON
+          ================================================= */}
+
+          <button
+            type="button"
+            onClick={() => {
+              setMobileOpen((current) => !current);
+              setProductsOpen(false);
+            }}
+            aria-label="Toggle navigation"
+            aria-expanded={mobileOpen}
+            className="
+              ml-auto
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-xl
+              border
+              border-white/10
+              bg-white/[0.04]
+              text-white
+              lg:hidden
+            "
+          >
+            {mobileOpen ? (
+              <X size={19} />
+            ) : (
+              <Menu size={19} />
+            )}
+          </button>
+        </div>
+
+        {/* =====================================================
+            MOBILE MENU
+        ====================================================== */}
+
+        {mobileOpen && (
+          <div
+            className="
+              mx-auto
+              mt-2
+              max-w-7xl
+              max-h-[calc(100vh-110px)]
+              overflow-y-auto
+              rounded-[24px]
+              border
+              border-white/10
+              bg-[#0d1525]
+              p-3
+              shadow-[0_25px_80px_rgba(0,0,0,0.45)]
+              lg:hidden
+            "
+          >
+            {/* HOME */}
+
+            <button
+              type="button"
+              onClick={handleHome}
+              className="
+                flex
+                h-12
                 w-full
                 items-center
                 rounded-xl
                 px-4
                 text-left
-                text-[13px]
+                text-[15px]
                 font-bold
                 text-white
-                transition-all
+                hover:bg-white/[0.06]
+              "
+            >
+              Home
+            </button>
+
+            {/* PRODUCTS */}
+
+            <button
+              type="button"
+              onClick={toggleProducts}
+              className="
+                flex
+                h-12
+                w-full
+                items-center
+                justify-between
+                rounded-xl
+                px-4
+                text-left
+                text-[15px]
+                font-bold
+                text-white
+                hover:bg-white/[0.06]
+              "
+            >
+              <span>Products</span>
+
+              <ChevronDown
+                size={17}
+                className={`
+                  transition-transform
+                  ${productsOpen ? "rotate-180" : ""}
+                `}
+              />
+            </button>
+
+            {/* MOBILE PRODUCT LIST */}
+
+            {productsOpen && (
+              <div
+                className="
+                  mb-2
+                  space-y-3
+                  rounded-2xl
+                  border
+                  border-white/[0.07]
+                  bg-black/10
+                  p-2
+                "
+              >
+                {/* CORPORATE */}
+
+                <div
+                  className="
+                    rounded-xl
+                    border
+                    border-white/[0.08]
+                    bg-[#111a2b]
+                    p-2
+                  "
+                >
+                  <a
+                    href={CORPORATE_URL}
+                    onClick={closeMenus}
+                    className="
+                      flex
+                      items-center
+                      justify-between
+                      rounded-lg
+                      px-3
+                      py-3
+                      hover:bg-[#d89b32]/[0.07]
+                    "
+                  >
+                    <div>
+                      <p
+                        className="
+                          text-[10px]
+                          font-bold
+                          uppercase
+                          tracking-[0.18em]
+                          text-[#d89b32]
+                        "
+                      >
+                        Corporate
+                      </p>
+
+                      <p className="mt-1 text-sm font-bold text-white">
+                        Workplace Solutions
+                      </p>
+                    </div>
+
+                    <ArrowUpRight
+                      size={17}
+                      className="text-white/40"
+                    />
+                  </a>
+
+                  <div className="mt-1 space-y-1">
+                    {corporateProducts.map((product) => (
+                      <a
+                        key={product.name}
+                        href={product.href}
+                        onClick={closeMenus}
+                        className="
+                          block
+                          rounded-lg
+                          px-3
+                          py-3
+                          text-sm
+                          font-semibold
+                          text-white/75
+                          hover:bg-white/[0.06]
+                          hover:text-white
+                        "
+                      >
+                        {product.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {/* INDUSTRIAL */}
+
+                <div
+                  className="
+                    rounded-xl
+                    border
+                    border-white/[0.08]
+                    bg-[#111a2b]
+                    p-2
+                  "
+                >
+                  <a
+                    href={INDUSTRIAL_URL}
+                    onClick={closeMenus}
+                    className="
+                      flex
+                      items-center
+                      justify-between
+                      rounded-lg
+                      px-3
+                      py-3
+                      hover:bg-[#d89b32]/[0.07]
+                    "
+                  >
+                    <div>
+                      <p
+                        className="
+                          text-[10px]
+                          font-bold
+                          uppercase
+                          tracking-[0.18em]
+                          text-[#d89b32]
+                        "
+                      >
+                        Industrial
+                      </p>
+
+                      <p className="mt-1 text-sm font-bold text-white">
+                        Industrial Solutions
+                      </p>
+                    </div>
+
+                    <ArrowUpRight
+                      size={17}
+                      className="text-white/40"
+                    />
+                  </a>
+
+                  <div className="mt-1 space-y-1">
+                    {industrialProducts.map((product) => (
+                      <a
+                        key={product.name}
+                        href={product.href}
+                        onClick={closeMenus}
+                        className="
+                          block
+                          rounded-lg
+                          px-3
+                          py-3
+                          text-sm
+                          font-semibold
+                          text-white/75
+                          hover:bg-white/[0.06]
+                          hover:text-white
+                        "
+                      >
+                        {product.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* BRANDS */}
+
+            <button
+              type="button"
+              onClick={() => scrollToSection("brands")}
+              className="
+                flex
+                h-12
+                w-full
+                items-center
+                rounded-xl
+                px-4
+                text-left
+                text-[15px]
+                font-bold
+                text-white
+                hover:bg-white/[0.06]
+              "
+            >
+              Brands
+            </button>
+
+            {/* ABOUT */}
+
+            <button
+              type="button"
+              onClick={() => scrollToSection("about")}
+              className="
+                flex
+                h-12
+                w-full
+                items-center
+                rounded-xl
+                px-4
+                text-left
+                text-[15px]
+                font-bold
+                text-white
+                hover:bg-white/[0.06]
+              "
+            >
+              About
+            </button>
+
+            {/* CONTACT */}
+
+            <button
+              type="button"
+              onClick={() => scrollToSection("contact")}
+              className="
+                flex
+                h-12
+                w-full
+                items-center
+                rounded-xl
+                px-4
+                text-left
+                text-[15px]
+                font-bold
+                text-white
                 hover:bg-white/[0.06]
               "
             >
@@ -1276,34 +1092,22 @@ export default function Navbar() {
                 gap-2
                 rounded-xl
                 bg-[#d89b32]
-                text-[12px]
+                text-sm
                 font-extrabold
                 text-[#0b1220]
               "
             >
-
-              <MessageCircle
-                size={16}
-                strokeWidth={2.5}
-              />
+              <MessageCircle size={16} />
 
               Request a Quote
 
-              <ArrowUpRight
-                size={15}
-                strokeWidth={2.5}
-              />
-
+              <ArrowUpRight size={15} />
             </a>
-
           </div>
         )}
-
       </header>
 
-      {/* =====================================================
-          NAVBAR OFFSET
-      ====================================================== */}
+      {/* NAVBAR SPACE */}
 
       <div className="h-[100px]" />
     </>
